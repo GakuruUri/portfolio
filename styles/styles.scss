@@ -86,17 +86,28 @@ section{
 
 .active {
     display: block;
-    animation: scaleAnim 1s ease-in-out;
-    @keyframes scaleAnim {
-        0%{
-            transform: translateY(-100%) scaleY(0);
-        }
-
-        100%{
-            transform: translateY(0) scaleY(1);
-        }
+    animation: appear 1s ease-in-out;
+    transform: translateY(0) scaleY(1);
+    @keyframes appear {
+        0%{transform: translateY(-100%) scaleY(0);}
+        100%{transform: translateY(0) scaleY(1); }
     }
 }
+
+
+// // .active {
+// //     display: block;
+// //     animation: scaleAnim 1s ease-in-out;
+// //     @keyframes scaleAnim {
+// //         0%{
+// //             transform: translateY(-100%) scaleY(0)
+// //         };
+
+// //         100%{
+// //             transform: translateY(0) scaleY(1)
+// //         };
+// //     }
+// // }
 
 .controls{
     position: fixed;
@@ -196,6 +207,29 @@ section{
 }
 
 
+.about-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding-top: 3.5rem;
+    padding-bottom: 5rem;
+    .right-about{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 2rem;
+        .about-item{
+            border:1px solid var(--color-grey-5);
+            border-radius: 5px;
+            transition: all .4s ease-in-out;
+            box-shadow: 1px 2px 15px rgba(0,0,0,.1);
+            &:hover{
+                cursor: default;
+                transform: translateY(-5px);
+                border: 1px solid var(--color-secondary);
+                box-shadow: 1px 4px 15px rgba(0,0,0,.32);
+            }
+        }
+    }
+}
 
 
 /*Indipendent components*/
@@ -241,6 +275,28 @@ section{
             height: 100%;
             background-color: var(--color-secondary);
             transform: translateX(0);
+        }
+    }
+}
+
+
+.main-title{
+    text-align: center;
+    h2{
+        position: relative;
+        text-transform: uppercase;
+        font-size: 4rem;
+        font-weight: 700;
+        span{
+            color: var(--color-secondary);
+        }
+        .bg-text{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 800;
+            font-size: 6.3rem;
         }
     }
 }

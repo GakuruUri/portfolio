@@ -13,7 +13,7 @@ function PageTransitions(){
             // this doesn't exist in an arrow ==> function it exists in a function()
             this.className += ' active-btn';
         })
-    }
+    };
 
     //Sctions Active
     allSections.addEventListener('click', (e) =>{
@@ -34,7 +34,42 @@ function PageTransitions(){
             element.classList.add('active');
         }
     })
-}
+};
 
 
 PageTransitions();
+
+
+
+// const sections = document.querySelectorAll('.section');
+// const sectBtns = document.querySelectorAll('.control'); // Selects the actual buttons
+// const allSections = document.querySelector('.main-content');
+
+// function PageTransitions() {
+//     // Button click active class
+//     sectBtns.forEach((btn) => {
+//         btn.addEventListener('click', function () {
+//             // Remove active class from all buttons
+//             sectBtns.forEach((button) => {
+//                 button.classList.remove('active-btn');
+//             });
+
+//             // Add active class to the clicked button
+//             this.classList.add('active-btn');
+
+//             // Remove active class from all sections
+//             sections.forEach((section) => {
+//                 section.classList.remove('active');
+//             });
+
+//             // Add active class to the selected section
+//             const id = this.dataset.id;
+//             const activeSection = document.getElementById(id);
+//             if (activeSection) {
+//                 activeSection.classList.add('active');
+//             }
+//         });
+//     });
+// }
+
+// PageTransitions();

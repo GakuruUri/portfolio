@@ -84,9 +84,10 @@ section {
 
 .active {
   display: block;
-  animation: scaleAnim 1s ease-in-out;
+  animation: appear 1s ease-in-out;
+  transform: translateY(0) scaleY(1);
 }
-@keyframes scaleAnim {
+@keyframes appear {
   0% {
     transform: translateY(-100%) scaleY(0);
   }
@@ -191,6 +192,30 @@ section {
   line-height: 2rem;
 }
 
+.about-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  padding-top: 3.5rem;
+  padding-bottom: 5rem;
+}
+.about-container .right-about {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 2rem;
+}
+.about-container .right-about .about-item {
+  border: 1px solid var(--color-grey-5);
+  border-radius: 5px;
+  transition: all 0.4s ease-in-out;
+  box-shadow: 1px 2px 15px rgba(0, 0, 0, 0.1);
+}
+.about-container .right-about .about-item:hover {
+  cursor: default;
+  transform: translateY(-5px);
+  border: 1px solid var(--color-secondary);
+  box-shadow: 1px 4px 15px rgba(0, 0, 0, 0.32);
+}
+
 /*Indipendent components*/
 .btn-con {
   display: flex;
@@ -237,4 +262,25 @@ section {
   height: 100%;
   background-color: var(--color-secondary);
   transform: translateX(0);
+}
+
+.main-title {
+  text-align: center;
+}
+.main-title h2 {
+  position: relative;
+  text-transform: uppercase;
+  font-size: 4rem;
+  font-weight: 700;
+}
+.main-title h2 span {
+  color: var(--color-secondary);
+}
+.main-title h2 .bg-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 800;
+  font-size: 6.3rem;
 }/*# sourceMappingURL=styles.css.map */
