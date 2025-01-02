@@ -392,6 +392,11 @@ section {
 .timeline .timeline-item i {
   font-size: 1.3rem;
 }
+.timeline .timeline-item ul {
+  list-style-type: disc; /* Use disc bullets */
+  list-style-position: inside; /* Place bullets within list items */
+  padding-left: 20px; /* Adjust padding as needed */
+}
 .timeline .tl-duration {
   padding: 0.2rem 0.6rem;
   background-color: var(--color-grey-5);

@@ -417,6 +417,12 @@ section{
         i{
             font-size: 1.3rem;
         }
+        ul { 
+            list-style-type: disc; /* Use disc bullets */
+            list-style-position: inside; /* Place bullets within list items */
+            padding-left: 20px; /* Adjust padding as needed */
+        }
+
     }
     .tl-duration{
         padding: .2rem .6rem;
@@ -443,6 +449,11 @@ section{
         color: var(--color-grey-2);
     }
 }
+
+// /* **Crucial Addition: Increase Specificity** */
+// .timeline-item ul {
+//     list-style: inherit; /* Inherit list-style properties from the browser's default */
+// }
 
 //Portfolios
 .port-text{
