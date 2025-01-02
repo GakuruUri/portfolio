@@ -42,6 +42,15 @@ function PageTransitions(){
     })
 };
 
+//Portfolio Code
+const counter = document.querySelector(".counter-number");
+async function updateCounter() {
+    let response = await fetch("https://gyuplrkphqm44me7whvnygp6dm0zchyc.lambda-url.us-east-1.on.aws/");
+    let data = await response.json();
+    counter.innerHTML = 'Views: ${data}';
+}
+
+
 
 PageTransitions();
 
