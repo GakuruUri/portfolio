@@ -448,11 +448,45 @@
                         <img src="img/blog1.jpg" alt="">
                         <div class="blog-text">
                             <h4>
-                                How to create your own website
+                                Static website deployment to AWS - and add CI/CD
                             </h4>
-                            <p>
+                            <ul>
+                                <li>**Creating a personal resume website like urigakuru.uriroots.com involves a combination of front-end development, cloud services, and automation tools.**</li>
+                                <li>**Front-End Development:**
+                                  <ul>
+                                    <li>HTML, CSS, and JavaScript: These core web technologies are used to structure the content, style the presentation, and add interactivity to the website.</li>
+                                  </ul>
+                                </li>
+                                <li>**Hosting and Deployment:**
+                                  <ul>
+                                    <li>Amazon S3: The website is hosted as a static site on Amazon S3, which offers scalable storage and high availability.</li>
+                                    <li>Amazon CloudFront and AWS Certificate Manager: CloudFront, a content delivery network (CDN), is used alongside AWS Certificate Manager to distribute the website globally with low latency and secure it with HTTPS.</li>
+                                    <li>Amazon Route 53: This DNS web service manages the domain name, directing traffic to the website hosted on S3.</li>
+                                  </ul>
+                                </li>
+                                <li>**Backend Services (Optional):**
+                                  <ul>
+                                    <li>Amazon DynamoDB: A NoSQL database service like DynamoDB can be used to store data such as page views or visitor information. This allows for dynamic content updates and analytics tracking.</li>
+                                    <li>Amazon API Gateway and AWS Lambda: These services can be used to create APIs that interact with DynamoDB, enabling dynamic functionalities without managing servers.</li>
+                                  </ul>
+                                </li>
+                                <li>**Infrastructure as Code (IaC):**
+                                  <li>Terraform: Infrastructure deployment is automated using Terraform, allowing for consistent and repeatable setups.</li>
+                                </li>
+                                <li>**Continuous Integration and Continuous Deployment (CI/CD):**
+                                  <ul>
+                                    <li>GitHub and GitHub Actions: Source code is managed in GitHub, with GitHub Actions facilitating automated testing and deployment.</li>
+                                  </ul>
+                                </li>
+                                <li>**Automation and Scripting:**
+                                  <ul>
+                                    <li>Python, HCL, YAML, JSON, Linux: Various scripting languages and tools are utilized for automation, configuration, and deployment tasks.</li>
+                                  </ul>
+                                </li>
+                              </ul>
+                            <!-- <p>
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sodales, justo vel aliquet fermentum, dolor ipsum scelerisque lectus, vel tempor velit felis eu velit.
-                            </p>
+                            </p> -->
                         </div>
                     </div>
 
