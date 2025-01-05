@@ -1,3 +1,4 @@
+@charset "UTF-8";
 * {
   margin: 0;
   padding: 0;
@@ -363,6 +364,27 @@ section {
   height: 1px;
   background-color: var(--color-grey-5);
   transform: translateX(-50%);
+}
+
+.left-about ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.left-about li {
+  margin-bottom: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.left-about li::before {
+  content: "•";
+  color: var(--primary-color);
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
 }
 
 /*timeline*/

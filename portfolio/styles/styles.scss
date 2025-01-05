@@ -392,6 +392,28 @@ section{
     }
 }
 
+.left-about ul {
+    list-style-type: none; // Removes default bullet points
+    margin: 0;
+    padding: 0;
+}
+
+.left-about li {
+    margin-bottom: 10px; // Adds spacing between list items
+    font-size: 16px; // Adjust to match paragraph font size
+    line-height: 1.5;
+}
+
+.left-about li::before {
+    content: "•"; // Optional: Custom bullet style
+    color: var(--primary-color); // Matches theme color
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+
 /*timeline*/
 .timeline{
     display: grid;
