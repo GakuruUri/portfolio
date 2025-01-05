@@ -414,6 +414,39 @@ section{
 }
 
 
+
+// About section update 2025
+.left-about ol {
+    list-style-type: decimal; // Ensure ordered numbering
+    margin: 0;
+    padding: 0 20px; // Add padding for indentation
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-grey-6);
+}
+
+.left-about ol > li {
+    margin-bottom: 15px; // Space between main steps
+}
+
+.left-about ol > li > ol {
+    list-style-type: lower-alpha; // Use lowercase letters for nested lists
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 20px;
+}
+
+.left-about ol > li > ol > li {
+    margin-bottom: 10px; // Space between nested steps
+}
+
+.left-about ol > li > p, 
+.left-about ol > li > ol > li {
+    font-size: 14px; // Slightly smaller font for descriptions
+    color: var(--color-grey-2);
+}
+
+
 /*timeline*/
 .timeline{
     display: grid;

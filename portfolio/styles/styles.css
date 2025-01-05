@@ -387,6 +387,36 @@ section {
   margin-left: -1em;
 }
 
+.left-about ol {
+  list-style-type: decimal;
+  margin: 0;
+  padding: 0 20px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-grey-6);
+}
+
+.left-about ol > li {
+  margin-bottom: 15px;
+}
+
+.left-about ol > li > ol {
+  list-style-type: lower-alpha;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-left: 20px;
+}
+
+.left-about ol > li > ol > li {
+  margin-bottom: 10px;
+}
+
+.left-about ol > li > p,
+.left-about ol > li > ol > li {
+  font-size: 14px;
+  color: var(--color-grey-2);
+}
+
 /*timeline*/
 .timeline {
   display: grid;
