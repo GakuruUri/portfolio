@@ -734,11 +734,34 @@ section{
             :last-child{
                 margin-left: 1.5rem;
             }
-        }
-        .submit-btn{
-            display: flex;
-            justify-content: flex-start;
-        }
+
+            // new buttons for send email and download cv.
+            .btn-con {
+                display: flex;
+                justify-content: flex-start; // Align buttons to the left
+                gap: 100px; // Add space between buttons
+            }
+            
+            .email-btn {
+                background-color: var(--secondary-color); // Use your theme's secondary color
+                color: white;
+                margin-right: 20px;
+                border: 1px solid var(--secondary-color);
+                transition: background-color 0.3s ease;
+               
+            }
+            
+            .email-btn:hover {
+                background-color: white;
+                color: var(--secondary-color);
+            }
+            
+
+        // }
+        // .submit-btn{
+        //     display: flex;
+        //     justify-content: flex-start;
+        // }
     }
 }
 
