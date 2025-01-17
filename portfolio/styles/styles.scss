@@ -61,6 +61,7 @@ header{
 
 
 
+
 section{
     min-height: 100vh;
     width: 100%;
@@ -647,6 +648,32 @@ section{
     }
 }
 
+
+// continue button 2025
+
+.continue-reading-btn {
+    background-color: var(--color-secondary);
+    color: var(--color-white);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+    &:hover {
+        background-color: var(--color-white);
+        color: var(--color-secondary);
+    }
+}
+
+.collapsible-content {
+    display: none;
+    margin-top: 1rem;
+    p {
+        color: var(--color-grey-2);
+        line-height: 2rem;
+    }
+}
 
 //Contact Section
 .contact-content-con{
