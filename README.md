@@ -18,7 +18,7 @@ This project hosts my personal portfolio website using AWS S3, CloudFront, Route
 
 ## 📐 Architecture
 
-![Architecture Diagram](./images/portfolio.png)
+/workspace/portfolio/portfolio.png
 
 ---
 
