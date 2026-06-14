@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Analytics with Adventure Works | Uri Gakuru</title>
+    <meta name="description" content="Business intelligence and SQL analytics using the Adventure Works sample database — KPI reports, analytical queries, stored procedures, and data exploration.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    <link rel="stylesheet" href="learning.css">
+</head>
+<body>
+
+<nav class="learn-nav">
+    <a href="../index.html" class="brand">Uri Gakuru</a>
+    <a href="../index.html#portfolio" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+</nav>
+
+<header class="learn-hero">
+    <div class="meta">
+        <span class="category">Data Analytics</span>
+        <span class="read-time"><i class="far fa-clock"></i> ~25 min read</span>
+    </div>
+    <h1>SQL Analytics with Adventure Works</h1>
+    <p class="subtitle">A hands-on guide to business intelligence using the Adventure Works sample database — from exploring the schema to writing KPI reports, window functions, and stored procedures.</p>
+</header>
+
+<div class="section-anchors">
+    <a href="#overview">Overview</a>
+    <a href="#prerequisites">Prerequisites</a>
+    <a href="#architecture">Data model</a>
+    <a href="#tutorial">Tutorial</a>
+    <a href="#learnings">Key learnings</a>
+    <a href="#resources">Resources</a>
+</div>
+
+<main class="learn-body">
+
+    <section class="learn-section" id="overview">
+        <h2>Overview</h2>
+        <div class="overview-text">
+            <p>Adventure Works is Microsoft's fictional bicycle manufacturing company — and the gold standard sample database for learning SQL. It contains realistic relational data across sales, products, customers, employees, and purchasing, giving you a real-world schema to query against.</p>
+            <p>This guide focuses on the analytical side: understanding the schema, writing queries that answer business questions, building KPI dashboards in SQL, and creating reusable stored procedures. The skills here apply directly to roles in data analysis, business intelligence, and data engineering.</p>
+        </div>
+    </section>
+
+    <section class="learn-section" id="prerequisites">
+        <h2>Prerequisites</h2>
+        <div class="prereq-chips">
+            <span>SQL Server or Azure SQL</span>
+            <span>Adventure Works 2019 backup (.bak)</span>
+            <span>SQL Server Management Studio</span>
+            <span>Intermediate SQL (JOINs, GROUP BY)</span>
+        </div>
+    </section>
+
+    <section class="learn-section" id="architecture">
+        <h2>Data model</h2>
+        <div class="arch-diagram">
+            <div class="arch-rows">
+                <div class="arch-row">
+                    <span class="arch-label">Sales</span>
+                    <div class="node secondary">SalesOrderHeader</div>
+                    <span class="arrow">→</span>
+                    <div class="node secondary">SalesOrderDetail</div>
+                    <span class="arrow">→</span>
+                    <div class="node">Product</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">Dimensions</span>
+                    <div class="node">Customer</div>
+                    <span class="arrow">+</span>
+                    <div class="node">SalesPerson</div>
+                    <span class="arrow">+</span>
+                    <div class="node">Territory</div>
+                    <span class="arrow">+</span>
+                    <div class="node">ProductCategory</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">Reports</span>
+                    <div class="node tertiary">Revenue by period</div>
+                    <span class="arrow">+</span>
+                    <div class="node tertiary">Top products</div>
+                    <span class="arrow">+</span>
+                    <div class="node tertiary">Sales rep KPIs</div>
+                </div>
+            </div>
+            <p class="arch-note">All tables are in the Sales, Production, Person, and HumanResources schemas. Use USE AdventureWorks2019; to set the context.</p>
+        </div>
+    </section>
+
+    <section class="learn-section" id="tutorial">
+        <h2>Tutorial steps</h2>
+        <div class="steps">
+
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>Restore and explore the database</h3>
+                    <p>Download the Adventure Works backup from GitHub, restore it to SQL Server, then explore the schema using INFORMATION_SCHEMA to understand what tables and columns are available.</p>
+                    <code>-- Restore from backup
+RESTORE DATABASE AdventureWorks2019
+FROM DISK = 'C:\backups\AdventureWorks2019.bak'
+WITH MOVE 'AdventureWorks2019' TO 'C:\data\AW2019.mdf',
+     MOVE 'AdventureWorks2019_log' TO 'C:\data\AW2019.ldf';
+
+-- Explore tables in the Sales schema
+SELECT TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = 'Sales'
+ORDER BY TABLE_NAME;</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>Revenue analysis — monthly and yearly trends</h3>
+                    <p>Calculate total revenue over time. Use DATETRUNC or FORMAT to group by month or year. Compare year-over-year growth using LAG().</p>
+                    <code">SELECT
+    YEAR(OrderDate)                      AS year,
+    MONTH(OrderDate)                     AS month,
+    COUNT(SalesOrderID)                  AS order_count,
+    SUM(TotalDue)                        AS revenue,
+    LAG(SUM(TotalDue)) OVER (
+        PARTITION BY MONTH(OrderDate)
+        ORDER BY YEAR(OrderDate)
+    )                                    AS prev_year_revenue,
+    ROUND(
+        (SUM(TotalDue) - LAG(SUM(TotalDue)) OVER (
+            PARTITION BY MONTH(OrderDate)
+            ORDER BY YEAR(OrderDate)
+        )) / NULLIF(LAG(SUM(TotalDue)) OVER (
+            PARTITION BY MONTH(OrderDate)
+            ORDER BY YEAR(OrderDate)
+        ), 0) * 100, 2
+    )                                    AS yoy_growth_pct
+FROM Sales.SalesOrderHeader
+WHERE OnlineOrderFlag = 0
+GROUP BY YEAR(OrderDate), MONTH(OrderDate)
+ORDER BY year, month;</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Top products and categories</h3>
+                    <p>Join order details to the product and category hierarchy to find best-sellers by revenue and quantity. Use RANK() to identify top performers.</p>
+                    <code>SELECT
+    pc.Name                              AS category,
+    p.Name                               AS product,
+    SUM(sod.OrderQty)                    AS units_sold,
+    ROUND(SUM(sod.LineTotal), 2)         AS revenue,
+    RANK() OVER (
+        PARTITION BY pc.Name
+        ORDER BY SUM(sod.LineTotal) DESC
+    )                                    AS rank_in_category
+FROM Sales.SalesOrderDetail sod
+JOIN Production.Product p         ON sod.ProductID = p.ProductID
+JOIN Production.ProductSubcategory ps ON p.ProductSubcategoryID = ps.ProductSubcategoryID
+JOIN Production.ProductCategory pc    ON ps.ProductCategoryID = pc.ProductCategoryID
+GROUP BY pc.Name, p.Name
+ORDER BY revenue DESC;</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h3>Sales rep performance dashboard</h3>
+                    <p>Build a per-sales-representative summary showing revenue, order count, average deal size, and rank within their territory.</p>
+                    <code>SELECT
+    p.FirstName + ' ' + p.LastName       AS sales_rep,
+    st.Name                              AS territory,
+    COUNT(DISTINCT soh.SalesOrderID)     AS orders,
+    ROUND(SUM(soh.TotalDue), 0)          AS total_revenue,
+    ROUND(AVG(soh.TotalDue), 0)          AS avg_order_value,
+    RANK() OVER (
+        PARTITION BY soh.TerritoryID
+        ORDER BY SUM(soh.TotalDue) DESC
+    )                                    AS territory_rank
+FROM Sales.SalesOrderHeader soh
+JOIN Sales.SalesPerson sp     ON soh.SalesPersonID = sp.BusinessEntityID
+JOIN Person.Person p          ON sp.BusinessEntityID = p.BusinessEntityID
+JOIN Sales.SalesTerritory st  ON soh.TerritoryID = st.TerritoryID
+WHERE soh.SalesPersonID IS NOT NULL
+GROUP BY p.FirstName, p.LastName, st.Name, soh.TerritoryID
+ORDER BY total_revenue DESC;</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                    <h3>Customer segmentation with RFM analysis</h3>
+                    <p>RFM (Recency, Frequency, Monetary) is a classic segmentation technique. Score each customer on how recently they bought, how often they buy, and how much they spend.</p>
+                    <code">WITH rfm_base AS (
+    SELECT
+        CustomerID,
+        DATEDIFF(DAY, MAX(OrderDate), '2014-07-01') AS recency,
+        COUNT(SalesOrderID)                          AS frequency,
+        ROUND(SUM(TotalDue), 0)                      AS monetary
+    FROM Sales.SalesOrderHeader
+    GROUP BY CustomerID
+)
+SELECT
+    CustomerID,
+    recency,
+    frequency,
+    monetary,
+    NTILE(5) OVER (ORDER BY recency)    AS r_score,
+    NTILE(5) OVER (ORDER BY frequency)  AS f_score,
+    NTILE(5) OVER (ORDER BY monetary)   AS m_score
+FROM rfm_base
+ORDER BY monetary DESC;</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">6</div>
+                <div class="step-content">
+                    <h3>Package reports as stored procedures</h3>
+                    <p>Wrap your most useful queries in stored procedures so they can be called easily from reporting tools or scheduled jobs. Add parameters for date range filtering.</p>
+                    <code">CREATE PROCEDURE report.MonthlyRevenue
+    @StartDate DATE = '2012-01-01',
+    @EndDate   DATE = '2014-12-31'
+AS
+BEGIN
+    SELECT
+        FORMAT(OrderDate, 'yyyy-MM')  AS month,
+        COUNT(SalesOrderID)           AS orders,
+        ROUND(SUM(TotalDue), 0)       AS revenue
+    FROM Sales.SalesOrderHeader
+    WHERE OrderDate BETWEEN @StartDate AND @EndDate
+      AND OnlineOrderFlag = 0
+    GROUP BY FORMAT(OrderDate, 'yyyy-MM')
+    ORDER BY month;
+END;
+
+-- Call it
+EXEC report.MonthlyRevenue @StartDate = '2013-01-01', @EndDate = '2013-12-31';</code>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="learn-section" id="learnings">
+        <h2>Key learnings</h2>
+        <div class="learnings">
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Window functions (RANK, LAG, NTILE, SUM OVER) are essential for analytical SQL — learn them before reaching for a spreadsheet.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> NULLIF prevents division by zero errors in percentage calculations — always use it in denominators.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> CTEs (WITH clauses) make complex queries readable by breaking them into named, logical steps.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Always filter early — apply WHERE conditions before GROUP BY to reduce the rows the database has to aggregate.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Stored procedures centralise business logic so analysts get consistent results without needing to rewrite complex queries.</div>
+        </div>
+    </section>
+
+    <section class="learn-section" id="resources">
+        <h2>Resources</h2>
+        <div class="resources">
+            <a href="https://github.com/microsoft/sql-server-samples/releases/tag/adventureworks" target="_blank" class="resource-link"><i class="fab fa-github"></i> Adventure Works database download (Microsoft)</a>
+            <a href="https://learn.microsoft.com/en-us/sql/t-sql/queries/select-over-clause-transact-sql" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Microsoft Docs — OVER clause (window functions)</a>
+            <a href="https://github.com/GakuruUri/adventure_works_project" target="_blank" class="resource-link"><i class="fab fa-github"></i> Full project on GitHub</a>
+        </div>
+    </section>
+
+</main>
+
+<footer class="learn-cta">
+    <p>Explore all queries and reports in the GitHub repository</p>
+    <div class="cta-buttons">
+        <a href="https://github.com/GakuruUri/adventure_works_project" target="_blank" class="btn-primary"><i class="fab fa-github"></i> View on GitHub</a>
+        <a href="https://www.linkedin.com/in/uri-gakuru-karanja/" target="_blank" class="btn-secondary"><i class="fab fa-linkedin"></i> Connect on LinkedIn</a>
+    </div>
+</footer>
+
+</body>
+</html>

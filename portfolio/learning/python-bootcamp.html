@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Bootcamp — 100 Days of Code | Uri Gakuru</title>
+    <meta name="description" content="A guided learning path through Python from beginner to advanced — covering data structures, OOP, APIs, automation, web scraping, and data science.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    <link rel="stylesheet" href="learning.css">
+</head>
+<body>
+
+<nav class="learn-nav">
+    <a href="../index.html" class="brand">Uri Gakuru</a>
+    <a href="../index.html#portfolio" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+</nav>
+
+<header class="learn-hero">
+    <div class="meta">
+        <span class="category">Python Development</span>
+        <span class="read-time"><i class="far fa-clock"></i> Self-paced (100 days)</span>
+    </div>
+    <h1>Python Bootcamp — 100 Days of Code</h1>
+    <p class="subtitle">A structured learning path from Python fundamentals to professional-level topics: automation, APIs, web scraping, data science, and beyond — based on a 178-commit, 100-day journey.</p>
+</header>
+
+<div class="section-anchors">
+    <a href="#overview">Overview</a>
+    <a href="#prerequisites">Prerequisites</a>
+    <a href="#architecture">Learning path</a>
+    <a href="#tutorial">Core concepts</a>
+    <a href="#learnings">Key learnings</a>
+    <a href="#resources">Resources</a>
+</div>
+
+<main class="learn-body">
+
+    <section class="learn-section" id="overview">
+        <h2>Overview</h2>
+        <div class="overview-text">
+            <p>Python is one of the most versatile programming languages in existence — it powers everything from simple automation scripts to machine learning models and cloud infrastructure tooling. This bootcamp covers the full spectrum: from your first variable to building web apps, scraping data from the web, and working with APIs.</p>
+            <p>This guide extracts the most important concepts from the 100-day journey and organises them into a logical progression. Each section builds on the last. The GitHub repository contains all the daily project files and exercises.</p>
+        </div>
+    </section>
+
+    <section class="learn-section" id="prerequisites">
+        <h2>Prerequisites</h2>
+        <div class="prereq-chips">
+            <span>No prior programming experience needed</span>
+            <span>Python 3.10+ installed</span>
+            <span>VS Code or PyCharm</span>
+            <span>Git (optional but recommended)</span>
+        </div>
+    </section>
+
+    <section class="learn-section" id="architecture">
+        <h2>Learning path</h2>
+        <div class="arch-diagram">
+            <div class="arch-rows">
+                <div class="arch-row">
+                    <span class="arch-label">Beginner</span>
+                    <div class="node secondary">Variables &amp; types</div>
+                    <span class="arrow">→</span>
+                    <div class="node secondary">Control flow</div>
+                    <span class="arrow">→</span>
+                    <div class="node secondary">Functions</div>
+                    <span class="arrow">→</span>
+                    <div class="node secondary">Data structures</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">Intermediate</span>
+                    <div class="node">OOP &amp; classes</div>
+                    <span class="arrow">→</span>
+                    <div class="node">File I/O</div>
+                    <span class="arrow">→</span>
+                    <div class="node">Error handling</div>
+                    <span class="arrow">→</span>
+                    <div class="node">Modules &amp; packages</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">Advanced</span>
+                    <div class="node tertiary">REST APIs</div>
+                    <span class="arrow">→</span>
+                    <div class="node tertiary">Web scraping</div>
+                    <span class="arrow">→</span>
+                    <div class="node tertiary">Automation</div>
+                    <span class="arrow">→</span>
+                    <div class="node tertiary">Data science</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="learn-section" id="tutorial">
+        <h2>Core concepts</h2>
+        <div class="steps">
+
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>Variables, data types, and operators</h3>
+                    <p>Python is dynamically typed — you don't declare types explicitly. Understand the key built-in types and how operators work on them.</p>
+                    <code>name = "Uri"           # str
+age  = 28             # int
+score = 95.5          # float
+active = True         # bool
+
+# String formatting (f-strings are preferred)
+print(f"Hello, {name}. You are {age} years old.")
+
+# Type conversion
+age_str = str(age)    # int → str
+pi = float("3.14")    # str → float</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>Control flow — if / for / while</h3>
+                    <p>Python uses indentation to define code blocks. Master list comprehensions early — they are more Pythonic and faster than equivalent for loops.</p>
+                    <code># Conditional
+if score >= 90:
+    print("A grade")
+elif score >= 75:
+    print("B grade")
+else:
+    print("Keep going")
+
+# List comprehension (preferred over for loop)
+squares = [x**2 for x in range(1, 11)]
+
+# Loop with enumerate
+fruits = ["apple", "banana", "cherry"]
+for index, fruit in enumerate(fruits):
+    print(f"{index}: {fruit}")</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Functions and scope</h3>
+                    <p>Write functions with default arguments, *args for variable positional arguments, and **kwargs for keyword arguments. Understand local vs global scope.</p>
+                    <code>def greet(name, greeting="Hello"):
+    return f"{greeting}, {name}!"
+
+# *args and **kwargs
+def summarise(*args, **kwargs):
+    print(f"Positional: {args}")
+    print(f"Keyword: {kwargs}")
+
+summarise(1, 2, 3, name="Uri", role="Engineer")
+
+# Lambda (anonymous functions)
+square = lambda x: x ** 2
+doubled = list(map(lambda x: x * 2, [1, 2, 3]))</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h3>Object-Oriented Programming</h3>
+                    <p>Classes let you model real-world entities with attributes (data) and methods (behaviour). Inheritance allows one class to reuse and extend another.</p>
+                    <code">class Animal:
+    def __init__(self, name, species):
+        self.name = name
+        self.species = species
+
+    def __repr__(self):
+        return f"{self.name} ({self.species})"
+
+    def speak(self):
+        raise NotImplementedError
+
+class Dog(Animal):
+    def __init__(self, name):
+        super().__init__(name, species="Canis lupus familiaris")
+
+    def speak(self):
+        return f"{self.name} says: Woof!"
+
+rex = Dog("Rex")
+print(rex.speak())</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                    <h3>Working with APIs</h3>
+                    <p>Use the <em>requests</em> library to consume REST APIs. Understand HTTP methods (GET, POST), status codes, and how to parse JSON responses.</p>
+                    <code">import requests
+
+# GET request
+response = requests.get("https://api.open-meteo.com/v1/forecast",
+    params={"latitude": -1.286389, "longitude": 36.817223,
+            "current_weather": True})
+
+if response.status_code == 200:
+    data = response.json()
+    temp = data["current_weather"]["temperature"]
+    print(f"Nairobi temperature: {temp}°C")
+else:
+    print(f"Error: {response.status_code}")</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">6</div>
+                <div class="step-content">
+                    <h3>Automation with Python</h3>
+                    <p>Python's standard library and third-party packages make it easy to automate file operations, schedule tasks, send emails, and interact with the operating system.</p>
+                    <code">import os
+import shutil
+from pathlib import Path
+
+# Organise files by extension
+downloads = Path.home() / "Downloads"
+for file in downloads.iterdir():
+    if file.is_file():
+        ext = file.suffix.lower().strip(".")
+        dest = downloads / ext
+        dest.mkdir(exist_ok=True)
+        shutil.move(str(file), str(dest / file.name))
+        print(f"Moved {file.name} → {ext}/")</code>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="learn-section" id="learnings">
+        <h2>Key learnings</h2>
+        <div class="learnings">
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Read the official Python docs. They are well-written and often the fastest path to the answer.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> List comprehensions, generator expressions, and dict comprehensions are more Pythonic than equivalent loop constructs — learn them early.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Virtual environments (venv) keep project dependencies isolated. Always create one before installing packages.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Use f-strings over .format() or % formatting — they are faster, more readable, and support expressions inline.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Commit your code daily even when incomplete. The 178-commit history tells the story of steady progress more convincingly than a single large commit.</div>
+        </div>
+    </section>
+
+    <section class="learn-section" id="resources">
+        <h2>Resources</h2>
+        <div class="resources">
+            <a href="https://docs.python.org/3/" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Official Python 3 documentation</a>
+            <a href="https://realpython.com" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Real Python — tutorials and articles</a>
+            <a href="https://github.com/GakuruUri/python_bootcamp" target="_blank" class="resource-link"><i class="fab fa-github"></i> Full bootcamp repository on GitHub</a>
+        </div>
+    </section>
+
+</main>
+
+<footer class="learn-cta">
+    <p>Explore all 100 days of code in the GitHub repository</p>
+    <div class="cta-buttons">
+        <a href="https://github.com/GakuruUri/python_bootcamp" target="_blank" class="btn-primary"><i class="fab fa-github"></i> View on GitHub</a>
+        <a href="https://www.linkedin.com/in/uri-gakuru-karanja/" target="_blank" class="btn-secondary"><i class="fab fa-linkedin"></i> Connect on LinkedIn</a>
+    </div>
+</footer>
+
+</body>
+</html>

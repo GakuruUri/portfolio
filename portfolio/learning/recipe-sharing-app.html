@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a Recipe Sharing Application | Uri Gakuru</title>
+    <meta name="description" content="Step-by-step guide to building a full-stack recipe sharing application — architecture, backend, API design, and deployment.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    <link rel="stylesheet" href="learning.css">
+</head>
+<body>
+
+<nav class="learn-nav">
+    <a href="../index.html" class="brand">Uri Gakuru</a>
+    <a href="../index.html#blogs" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+</nav>
+
+<header class="learn-hero">
+    <div class="meta">
+        <span class="category">Web Development</span>
+        <span class="read-time"><i class="far fa-clock"></i> ~20 min read</span>
+    </div>
+    <h1>Building a Recipe Sharing Application</h1>
+    <p class="subtitle">A full-stack walkthrough covering architecture decisions, backend API design, database modelling, and deployment strategies for a recipe sharing platform.</p>
+</header>
+
+<div class="section-anchors">
+    <a href="#overview">Overview</a>
+    <a href="#prerequisites">Prerequisites</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#tutorial">Tutorial</a>
+    <a href="#learnings">Key learnings</a>
+    <a href="#resources">Resources</a>
+</div>
+
+<main class="learn-body">
+
+    <section class="learn-section" id="overview">
+        <h2>Overview</h2>
+        <div class="overview-text">
+            <p>A recipe sharing application is a great full-stack project because it touches every layer of a modern web app: user authentication, CRUD operations, file uploads (for recipe images), search and filtering, and a consumable API.</p>
+            <p>This guide walks through the decisions made at each stage — why certain patterns were chosen, what trade-offs exist, and how the pieces connect. You will end up with a working application you can extend and deploy.</p>
+        </div>
+    </section>
+
+    <section class="learn-section" id="prerequisites">
+        <h2>Prerequisites</h2>
+        <div class="prereq-chips">
+            <span>Python 3.10+</span>
+            <span>Basic HTML / CSS</span>
+            <span>Understanding of REST APIs</span>
+            <span>SQL basics (PostgreSQL or SQLite)</span>
+            <span>Git installed</span>
+        </div>
+    </section>
+
+    <section class="learn-section" id="architecture">
+        <h2>Architecture</h2>
+        <div class="arch-diagram">
+            <div class="arch-rows">
+                <div class="arch-row">
+                    <span class="arch-label">Frontend</span>
+                    <div class="node">Browser (HTML/CSS/JS)</div>
+                    <span class="arrow">→ HTTP →</span>
+                    <div class="node secondary">Flask / FastAPI backend</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">Backend</span>
+                    <div class="node secondary">REST API routes</div>
+                    <span class="arrow">→</span>
+                    <div class="node">SQLite / PostgreSQL</div>
+                    <span class="arrow">+</span>
+                    <div class="node">File storage (images)</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">Auth</span>
+                    <div class="node secondary">Session tokens (JWT)</div>
+                    <span class="arrow">→</span>
+                    <div class="node">Users table</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">Deploy</span>
+                    <div class="node tertiary">Docker container</div>
+                    <span class="arrow">→</span>
+                    <div class="node tertiary">Cloud host (Render / Railway)</div>
+                </div>
+            </div>
+            <p class="arch-note">Images are stored as files on the server (or S3 in production) with only the file path saved in the database.</p>
+        </div>
+    </section>
+
+    <section class="learn-section" id="tutorial">
+        <h2>Tutorial steps</h2>
+        <div class="steps">
+
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>Plan your data model</h3>
+                    <p>Before writing any code, sketch the database schema. A recipe app needs at minimum: users, recipes, ingredients, and tags. Decide on relationships — a recipe belongs to one user, but can have many ingredients and many tags.</p>
+                    <code>users      → id, username, email, password_hash
+recipes    → id, user_id (FK), title, description, image_path, created_at
+ingredients→ id, recipe_id (FK), name, quantity, unit
+tags       → id, name
+recipe_tags→ recipe_id (FK), tag_id (FK)  [junction table]</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>Set up the Flask application</h3>
+                    <p>Create the project structure and initialise Flask with SQLAlchemy for ORM and Flask-Login for session management.</p>
+                    <code>pip install flask flask-sqlalchemy flask-login werkzeug
+
+# app/__init__.py
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+
+db = SQLAlchemy()
+login_manager = LoginManager()
+
+def create_app():
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///recipes.db'
+    app.config['SECRET_KEY'] = 'your-secret-key'
+    db.init_app(app)
+    login_manager.init_app(app)
+    return app</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Define the models</h3>
+                    <p>Create SQLAlchemy model classes that map to your database tables. Use relationships to enable easy navigation between related records.</p>
+                    <code>class Recipe(db.Model):
+    id          = db.Column(db.Integer, primary_key=True)
+    user_id     = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    title       = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    image_path  = db.Column(db.String(300))
+    created_at  = db.Column(db.DateTime, default=datetime.utcnow)
+    ingredients = db.relationship('Ingredient', backref='recipe', lazy=True, cascade='all, delete')</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h3>Build the API routes</h3>
+                    <p>Create routes for listing, creating, updating, and deleting recipes. Use Flask's request object to handle JSON payloads and file uploads.</p>
+                    <code>@app.route('/api/recipes', methods=['GET'])
+def get_recipes():
+    recipes = Recipe.query.order_by(Recipe.created_at.desc()).all()
+    return jsonify([r.to_dict() for r in recipes])
+
+@app.route('/api/recipes', methods=['POST'])
+@login_required
+def create_recipe():
+    data = request.get_json()
+    recipe = Recipe(user_id=current_user.id, title=data['title'], description=data.get('description'))
+    db.session.add(recipe)
+    db.session.commit()
+    return jsonify(recipe.to_dict()), 201</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                    <h3>Handle image uploads</h3>
+                    <p>Allow users to upload a photo for each recipe. Validate the file type, generate a secure filename, and store it in an uploads folder. In production, swap local storage for S3.</p>
+                    <code>ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/api/recipes/&lt;int:id&gt;/image', methods=['POST'])
+@login_required
+def upload_image(id):
+    file = request.files.get('image')
+    if file and allowed_file(file.filename):
+        filename = secure_filename(f"{id}_{file.filename}")
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        recipe = Recipe.query.get_or_404(id)
+        recipe.image_path = filename
+        db.session.commit()
+    return jsonify({'status': 'uploaded'})</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">6</div>
+                <div class="step-content">
+                    <h3>Containerise and deploy</h3>
+                    <p>Write a Dockerfile to containerise the application so it runs consistently in any environment. Deploy to a free cloud host like Render or Railway by connecting your GitHub repo.</p>
+                    <code>FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 5000
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:create_app()"]</code>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="learn-section" id="learnings">
+        <h2>Key learnings</h2>
+        <div class="learnings">
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Always hash passwords with werkzeug.security or bcrypt — never store plain text passwords.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Use cascade='all, delete' on relationships so deleting a recipe automatically deletes its ingredients.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Validate and sanitise file uploads server-side. Client-side validation is for UX only, not security.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Separate your business logic from your route handlers early — it makes testing much easier as the app grows.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Use environment variables for secrets — never hardcode database URLs or API keys in source code.</div>
+        </div>
+    </section>
+
+    <section class="learn-section" id="resources">
+        <h2>Resources</h2>
+        <div class="resources">
+            <a href="https://flask.palletsprojects.com/en/3.0.x/" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Flask documentation</a>
+            <a href="https://flask-sqlalchemy.palletsprojects.com/" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Flask-SQLAlchemy documentation</a>
+            <a href="https://flask-login.readthedocs.io/" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Flask-Login documentation</a>
+        </div>
+    </section>
+
+</main>
+
+<footer class="learn-cta">
+    <p>Read the full article on dev.to or browse the source code</p>
+    <div class="cta-buttons">
+        <a href="https://dev.to/gakuruuri/building-a-recipe-sharing-application-3gc5" target="_blank" class="btn-primary"><i class="fab fa-dev"></i> Read on dev.to</a>
+        <a href="https://github.com/GakuruUri" target="_blank" class="btn-secondary"><i class="fab fa-github"></i> View on GitHub</a>
+    </div>
+</footer>
+
+</body>
+</html>

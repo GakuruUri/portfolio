@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a SQL Data Warehouse | Uri Gakuru</title>
+    <meta name="description" content="Learn how to design and build a modern SQL data warehouse using Medallion Architecture (Bronze, Silver, Gold) with ETL pipelines and analytics.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    <link rel="stylesheet" href="learning.css">
+</head>
+<body>
+
+<nav class="learn-nav">
+    <a href="../index.html" class="brand">Uri Gakuru</a>
+    <a href="../index.html#portfolio" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+</nav>
+
+<header class="learn-hero">
+    <div class="meta">
+        <span class="category">Data Engineering</span>
+        <span class="read-time"><i class="far fa-clock"></i> ~25 min read</span>
+    </div>
+    <h1>Building a SQL Data Warehouse with Medallion Architecture</h1>
+    <p class="subtitle">A practical guide to designing a modern data warehouse using the Bronze, Silver, and Gold layer pattern — with ETL pipelines, data modelling, and analytics-ready views.</p>
+</header>
+
+<div class="section-anchors">
+    <a href="#overview">Overview</a>
+    <a href="#prerequisites">Prerequisites</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#tutorial">Tutorial</a>
+    <a href="#learnings">Key learnings</a>
+    <a href="#resources">Resources</a>
+</div>
+
+<main class="learn-body">
+
+    <section class="learn-section" id="overview">
+        <h2>Overview</h2>
+        <div class="overview-text">
+            <p>The Medallion Architecture (also called multi-hop architecture) organises data into three progressive layers: Bronze (raw), Silver (cleaned and conformed), and Gold (aggregated and analytics-ready). Each layer adds more value and structure to the data as it flows through.</p>
+            <p>This project implements a full data warehouse on SQL Server, ingesting raw source data, applying transformations, and producing Gold-layer views and fact/dimension tables that power business intelligence reports. The same principles apply to cloud warehouses like Snowflake, BigQuery, and Azure Synapse.</p>
+        </div>
+    </section>
+
+    <section class="learn-section" id="prerequisites">
+        <h2>Prerequisites</h2>
+        <div class="prereq-chips">
+            <span>SQL Server (or Azure SQL)</span>
+            <span>SQL Server Management Studio</span>
+            <span>Intermediate SQL knowledge</span>
+            <span>Basic understanding of ETL concepts</span>
+            <span>Sample source data (CSV/flat files)</span>
+        </div>
+    </section>
+
+    <section class="learn-section" id="architecture">
+        <h2>Architecture</h2>
+        <div class="arch-diagram">
+            <div class="arch-rows">
+                <div class="arch-row">
+                    <span class="arch-label">Sources</span>
+                    <div class="node">CRM system</div>
+                    <span class="arrow">+</span>
+                    <div class="node">ERP system</div>
+                    <span class="arrow">+</span>
+                    <div class="node">CSV files</div>
+                    <span class="arrow">→</span>
+                    <div class="node secondary">Bronze layer</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">Transform</span>
+                    <div class="node secondary">Bronze (raw)</div>
+                    <span class="arrow">→ clean, dedupe →</span>
+                    <div class="node secondary">Silver (cleaned)</div>
+                    <span class="arrow">→ model →</span>
+                    <div class="node tertiary">Gold (analytics)</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">Consume</span>
+                    <div class="node tertiary">Gold views</div>
+                    <span class="arrow">→</span>
+                    <div class="node">BI reports</div>
+                    <span class="arrow">+</span>
+                    <div class="node">Ad-hoc SQL queries</div>
+                </div>
+            </div>
+            <p class="arch-note">Each layer is a separate schema in SQL Server: bronze, silver, gold. Transformations are stored procedures or views that reference the layer below.</p>
+        </div>
+    </section>
+
+    <section class="learn-section" id="tutorial">
+        <h2>Tutorial steps</h2>
+        <div class="steps">
+
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>Create the database and schemas</h3>
+                    <p>Set up the warehouse database with three schemas: bronze, silver, and gold. This logical separation enforces the layer boundaries and makes access control easier.</p>
+                    <code>CREATE DATABASE DataWarehouse;
+GO
+USE DataWarehouse;
+CREATE SCHEMA bronze;
+CREATE SCHEMA silver;
+CREATE SCHEMA gold;</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>Design and load the Bronze layer</h3>
+                    <p>Bronze tables mirror your source systems exactly — no transformations. Load raw data using BULK INSERT or SSIS. Preserve all columns including nulls, duplicates, and inconsistent formatting. Timestamps should record exactly when the record was ingested.</p>
+                    <code>CREATE TABLE bronze.crm_customers (
+    customer_id     NVARCHAR(50),
+    first_name      NVARCHAR(100),
+    last_name       NVARCHAR(100),
+    email           NVARCHAR(200),
+    create_date     NVARCHAR(50),  -- kept as string, cleaned in Silver
+    dwh_load_date   DATETIME DEFAULT GETDATE()
+);
+
+BULK INSERT bronze.crm_customers
+FROM 'C:\data\crm_customers.csv'
+WITH (FIELDTERMINATOR = ',', ROWTERMINATOR = '\n', FIRSTROW = 2);</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Build the Silver layer — clean and standardise</h3>
+                    <p>Silver tables contain cleaned, typed, and deduplicated data. Write stored procedures that read from Bronze and produce Silver. Handle nulls, cast strings to proper types, trim whitespace, and resolve duplicates using ROW_NUMBER().</p>
+                    <code>CREATE TABLE silver.customers (
+    customer_key    INT IDENTITY(1,1) PRIMARY KEY,
+    customer_id     NVARCHAR(50)  NOT NULL,
+    first_name      NVARCHAR(100),
+    last_name       NVARCHAR(100),
+    email           NVARCHAR(200),
+    create_date     DATE,
+    dwh_load_date   DATETIME DEFAULT GETDATE()
+);
+
+-- Stored proc to load Silver
+CREATE PROCEDURE silver.load_customers AS
+BEGIN
+    TRUNCATE TABLE silver.customers;
+    INSERT INTO silver.customers (customer_id, first_name, last_name, email, create_date)
+    SELECT customer_id,
+           TRIM(first_name),
+           TRIM(last_name),
+           LOWER(TRIM(email)),
+           TRY_CAST(create_date AS DATE)
+    FROM (
+        SELECT *, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY dwh_load_date DESC) AS rn
+        FROM bronze.crm_customers
+    ) t WHERE rn = 1;
+END;</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h3>Build the Gold layer — model for analytics</h3>
+                    <p>The Gold layer uses a Star Schema: a central fact table surrounded by dimension tables. Create views (or materialised tables) that join Silver tables into business-meaningful structures. Dimensions hold descriptive attributes; facts hold measurable events.</p>
+                    <code>-- Dimension: customers
+CREATE VIEW gold.dim_customers AS
+SELECT customer_key,
+       customer_id,
+       first_name + ' ' + last_name AS full_name,
+       email,
+       create_date
+FROM silver.customers;
+
+-- Fact: sales orders
+CREATE VIEW gold.fact_sales AS
+SELECT o.order_key,
+       o.order_date,
+       c.customer_key,
+       p.product_key,
+       o.quantity,
+       o.unit_price,
+       o.quantity * o.unit_price AS revenue
+FROM silver.orders o
+JOIN gold.dim_customers c ON o.customer_id = c.customer_id
+JOIN gold.dim_products  p ON o.product_id  = p.product_id;</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                    <h3>Run analytical queries against Gold</h3>
+                    <p>With the Star Schema in place, business questions become simple queries. Analysts can join fact and dimension tables without knowing the underlying cleaning logic.</p>
+                    <code>-- Monthly revenue by customer segment
+SELECT FORMAT(f.order_date, 'yyyy-MM') AS month,
+       COUNT(DISTINCT f.customer_key)  AS unique_customers,
+       SUM(f.revenue)                  AS total_revenue
+FROM gold.fact_sales f
+GROUP BY FORMAT(f.order_date, 'yyyy-MM')
+ORDER BY month;</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">6</div>
+                <div class="step-content">
+                    <h3>Automate the pipeline</h3>
+                    <p>Create a master stored procedure that calls each layer's load procedure in order: Bronze → Silver → Gold. Schedule it using SQL Server Agent jobs to run on your desired cadence (hourly, daily, etc.).</p>
+                    <code>CREATE PROCEDURE dbo.run_etl_pipeline AS
+BEGIN
+    EXEC bronze.load_all;
+    EXEC silver.load_all;
+    PRINT 'ETL pipeline completed: ' + CONVERT(NVARCHAR, GETDATE(), 120);
+END;</code>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="learn-section" id="learnings">
+        <h2>Key learnings</h2>
+        <div class="learnings">
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Never transform data in the Bronze layer. Raw means raw — even bad data should land unchanged so you can debug upstream issues.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Star schemas outperform normalised schemas for analytics because fewer joins means faster queries and simpler BI tool integration.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Use surrogate keys (IDENTITY columns) in dimension tables rather than natural keys — they survive upstream system changes.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> TRY_CAST is safer than CAST in ETL — it returns NULL instead of throwing an error when a value can't be converted.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> The TRUNCATE + INSERT pattern in Silver stored procedures ensures idempotency: you can re-run the pipeline safely without duplicating data.</div>
+        </div>
+    </section>
+
+    <section class="learn-section" id="resources">
+        <h2>Resources</h2>
+        <div class="resources">
+            <a href="https://docs.microsoft.com/en-us/azure/databricks/lakehouse/medallion" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Databricks Docs — Medallion Architecture</a>
+            <a href="https://docs.microsoft.com/en-us/sql/relational-databases/stored-procedures/stored-procedures-database-engine" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Microsoft Docs — SQL Server Stored Procedures</a>
+            <a href="https://app.notion.com/p/SQL-Data-Warehouse-Project-23c86509b37080738ab1ea2f4e7fef4a" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Project notes on Notion</a>
+        </div>
+    </section>
+
+</main>
+
+<footer class="learn-cta">
+    <p>Explore the full source code and documentation on GitHub</p>
+    <div class="cta-buttons">
+        <a href="https://github.com/GakuruUri/sql-data-warehouse-project" target="_blank" class="btn-primary"><i class="fab fa-github"></i> View on GitHub</a>
+        <a href="https://www.linkedin.com/in/uri-gakuru-karanja/" target="_blank" class="btn-secondary"><i class="fab fa-linkedin"></i> Connect on LinkedIn</a>
+    </div>
+</footer>
+
+</body>
+</html>

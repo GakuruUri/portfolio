@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Hat Enterprise Linux 9 Administration (RHCSA) | Uri Gakuru</title>
+    <meta name="description" content="Practical guide to Linux system administration on RHEL 9 — users, permissions, systemd, networking, storage, and SELinux for RHCSA preparation.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    <link rel="stylesheet" href="learning.css">
+</head>
+<body>
+
+<nav class="learn-nav">
+    <a href="../index.html" class="brand">Uri Gakuru</a>
+    <a href="../index.html#portfolio" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+</nav>
+
+<header class="learn-hero">
+    <div class="meta">
+        <span class="category">Linux &amp; Systems</span>
+        <span class="read-time"><i class="far fa-clock"></i> ~30 min read</span>
+    </div>
+    <h1>Red Hat Enterprise Linux 9 Administration — RHCSA Preparation</h1>
+    <p class="subtitle">A structured walkthrough of the core Linux administration topics covered in the RHCSA exam: users, permissions, systemd services, networking, storage management, and SELinux.</p>
+</header>
+
+<div class="section-anchors">
+    <a href="#overview">Overview</a>
+    <a href="#prerequisites">Prerequisites</a>
+    <a href="#architecture">System map</a>
+    <a href="#tutorial">Tutorial</a>
+    <a href="#learnings">Key learnings</a>
+    <a href="#resources">Resources</a>
+</div>
+
+<main class="learn-body">
+
+    <section class="learn-section" id="overview">
+        <h2>Overview</h2>
+        <div class="overview-text">
+            <p>The Red Hat Certified System Administrator (RHCSA) certification validates your ability to perform core Linux system administration tasks in a Red Hat Enterprise Linux environment. It is a practical, hands-on exam — there are no multiple choice questions, only tasks performed on a live system.</p>
+            <p>This guide is a condensed reference of the key domains: user and group management, file permissions, managing services with systemd, configuring networking, managing storage, and working with SELinux. Each section includes the commands you need to know and common exam scenarios.</p>
+        </div>
+    </section>
+
+    <section class="learn-section" id="prerequisites">
+        <h2>Prerequisites</h2>
+        <div class="prereq-chips">
+            <span>RHEL 9 or Rocky Linux 9 VM</span>
+            <span>Basic command line familiarity</span>
+            <span>VirtualBox or VMware installed</span>
+            <span>SSH client</span>
+        </div>
+    </section>
+
+    <section class="learn-section" id="architecture">
+        <h2>System map</h2>
+        <div class="arch-diagram">
+            <div class="arch-rows">
+                <div class="arch-row">
+                    <span class="arch-label">Users</span>
+                    <div class="node">/etc/passwd</div>
+                    <span class="arrow">+</span>
+                    <div class="node">/etc/shadow</div>
+                    <span class="arrow">+</span>
+                    <div class="node">/etc/group</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">Services</span>
+                    <div class="node secondary">systemd</div>
+                    <span class="arrow">manages</span>
+                    <div class="node secondary">unit files (.service)</div>
+                    <span class="arrow">+</span>
+                    <div class="node secondary">targets (runlevels)</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">Storage</span>
+                    <div class="node">Physical volumes (PV)</div>
+                    <span class="arrow">→</span>
+                    <div class="node">Volume groups (VG)</div>
+                    <span class="arrow">→</span>
+                    <div class="node">Logical volumes (LV)</div>
+                    <span class="arrow">→</span>
+                    <div class="node tertiary">Mount points</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">SELinux</span>
+                    <div class="node secondary">Contexts (labels)</div>
+                    <span class="arrow">enforced by</span>
+                    <div class="node secondary">Policies</div>
+                    <span class="arrow">audited in</span>
+                    <div class="node">/var/log/audit</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="learn-section" id="tutorial">
+        <h2>Tutorial steps</h2>
+        <div class="steps">
+
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>User and group management</h3>
+                    <p>Create users, set passwords, manage supplementary groups, and configure sudo access. The RHCSA exam frequently tests creating users with specific UIDs and assigning them to groups.</p>
+                    <code># Create user with specific UID and home directory
+useradd -u 1050 -m -s /bin/bash john
+
+# Set password
+echo "SecurePass123!" | passwd --stdin john
+
+# Create group and add user
+groupadd devteam
+usermod -aG devteam john
+
+# Grant sudo access
+visudo  # add: john ALL=(ALL) NOPASSWD:ALL
+# Or: usermod -aG wheel john</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>File permissions and ownership</h3>
+                    <p>Understand octal permissions, special bits (SUID, SGID, sticky), and ACLs. The setgid bit on a directory is a common exam scenario — files created inside inherit the directory's group.</p>
+                    <code># Set permissions with octal notation
+chmod 750 /opt/project      # rwxr-x---
+chown john:devteam /opt/project
+
+# Set SGID on directory (new files inherit group)
+chmod g+s /opt/shared
+
+# Set sticky bit (only owner can delete)
+chmod +t /tmp/shared
+
+# Access Control Lists (ACLs)
+setfacl -m u:jane:rwx /opt/project   # grant jane rwx
+getfacl /opt/project                  # view ACLs</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Managing services with systemd</h3>
+                    <p>Start, stop, enable, disable, and troubleshoot services. Know the difference between <em>start</em> (immediate) and <em>enable</em> (survives reboot). Use journalctl to diagnose failures.</p>
+                    <code># Start and enable a service
+systemctl start  httpd
+systemctl enable httpd
+systemctl enable --now httpd   # start + enable in one command
+
+# Check status and logs
+systemctl status httpd
+journalctl -u httpd -n 50 --no-pager
+
+# Change default target (runlevel)
+systemctl get-default
+systemctl set-default multi-user.target   # no GUI
+systemctl isolate graphical.target        # switch now</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h3>Networking configuration</h3>
+                    <p>Configure static IP addresses using nmcli or nmtui. Know how to set hostname, configure DNS, and troubleshoot connectivity. NetworkManager is the standard in RHEL 9.</p>
+                    <code># Show current connections
+nmcli connection show
+
+# Configure static IP
+nmcli connection modify "ens33" \
+  ipv4.method manual \
+  ipv4.addresses 192.168.1.100/24 \
+  ipv4.gateway  192.168.1.1 \
+  ipv4.dns      8.8.8.8
+
+nmcli connection up "ens33"
+
+# Set hostname
+hostnamectl set-hostname rhel9-lab.local
+
+# Test connectivity
+ping -c 3 8.8.8.8
+ss -tlnp   # show listening ports</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                    <h3>Logical Volume Management (LVM)</h3>
+                    <p>Create and extend logical volumes. The RHCSA exam commonly asks you to extend an existing LV and resize the filesystem without data loss.</p>
+                    <code># Create LVM stack
+pvcreate /dev/sdb
+vgcreate datavg /dev/sdb
+lvcreate -L 5G -n datalv datavg
+mkfs.xfs /dev/datavg/datalv
+
+# Mount persistently (add to /etc/fstab)
+mkdir /data
+echo "/dev/datavg/datalv /data xfs defaults 0 0" >> /etc/fstab
+mount -a
+
+# Extend LV and resize filesystem
+lvextend -L +2G /dev/datavg/datalv
+xfs_growfs /data   # XFS can grow while mounted</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">6</div>
+                <div class="step-content">
+                    <h3>SELinux fundamentals</h3>
+                    <p>Understand SELinux modes, manage file contexts, and use audit2allow to diagnose denials. Never disable SELinux in the exam — troubleshoot it instead.</p>
+                    <code># Check SELinux status
+getenforce        # Enforcing / Permissive / Disabled
+sestatus
+
+# Change mode (temporary)
+setenforce 0      # Permissive (for debugging)
+setenforce 1      # Enforcing
+
+# Fix file context after moving files
+restorecon -Rv /var/www/html/
+
+# Set custom context
+semanage fcontext -a -t httpd_sys_content_t "/mywebroot(/.*)?"
+restorecon -Rv /mywebroot
+
+# Read audit denials
+ausearch -m avc -ts recent
+audit2why &lt; /var/log/audit/audit.log</code>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="learn-section" id="learnings">
+        <h2>Key learnings</h2>
+        <div class="learnings">
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> systemctl enable starts a service at boot — systemctl start only starts it now. Use --now to do both at once.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Always add mounts to /etc/fstab for persistence, then run mount -a to verify the syntax is correct before rebooting.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> XFS filesystems can be grown online but cannot be shrunk — plan your storage sizing carefully.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> SELinux context issues are the most common cause of mysterious permission denials. Check ausearch -m avc before assuming file permissions are the problem.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> In the RHCSA exam, practice typing commands fast and accurately — you are graded on the final system state, not how you got there.</div>
+        </div>
+    </section>
+
+    <section class="learn-section" id="resources">
+        <h2>Resources</h2>
+        <div class="resources">
+            <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Red Hat RHEL 9 Documentation</a>
+            <a href="https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> RHCSA exam objectives (EX200)</a>
+            <a href="https://github.com/GakuruUri/redhat_enterprise" target="_blank" class="resource-link"><i class="fab fa-github"></i> Study notes and practice scripts on GitHub</a>
+        </div>
+    </section>
+
+</main>
+
+<footer class="learn-cta">
+    <p>Browse the full study repository including practice scripts and notes</p>
+    <div class="cta-buttons">
+        <a href="https://github.com/GakuruUri/redhat_enterprise" target="_blank" class="btn-primary"><i class="fab fa-github"></i> View on GitHub</a>
+        <a href="https://www.linkedin.com/in/uri-gakuru-karanja/" target="_blank" class="btn-secondary"><i class="fab fa-linkedin"></i> Connect on LinkedIn</a>
+    </div>
+</footer>
+
+</body>
+</html>

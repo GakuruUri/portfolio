@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hosting a Static Website on AWS S3 + CloudFront | Uri Gakuru</title>
+    <meta name="description" content="Step-by-step guide to hosting a static website on AWS using S3, CloudFront, ACM, Route 53, and GitHub Actions CI/CD.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    <link rel="stylesheet" href="learning.css">
+</head>
+<body>
+
+<nav class="learn-nav">
+    <a href="../index.html" class="brand">Uri Gakuru</a>
+    <a href="../index.html#portfolio" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+</nav>
+
+<header class="learn-hero">
+    <div class="meta">
+        <span class="category">Cloud Engineering</span>
+        <span class="read-time"><i class="far fa-clock"></i> ~20 min read</span>
+    </div>
+    <h1>Hosting a static website on AWS S3 + CloudFront</h1>
+    <p class="subtitle">A complete walkthrough of the exact AWS setup powering this portfolio — from S3 bucket to HTTPS domain with automated CI/CD via GitHub Actions.</p>
+</header>
+
+<div class="section-anchors">
+    <a href="#overview">Overview</a>
+    <a href="#prerequisites">Prerequisites</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#tutorial">Tutorial</a>
+    <a href="#learnings">Key learnings</a>
+    <a href="#resources">Resources</a>
+</div>
+
+<main class="learn-body">
+
+    <section class="learn-section" id="overview">
+        <h2>Overview</h2>
+        <div class="overview-text">
+            <p>AWS S3 is more than object storage — it doubles as a highly available, serverless static website host. Pair it with CloudFront (AWS's global CDN), ACM for free SSL certificates, and Route 53 for DNS, and you get a production-grade website with sub-second global load times at a few cents per month.</p>
+            <p>This guide covers the full stack used to host this portfolio: S3 for file storage, CloudFront for caching and HTTPS termination, ACM for certificate management, Route 53 for domain routing, and GitHub Actions for zero-touch deployments on every git push.</p>
+        </div>
+    </section>
+
+    <section class="learn-section" id="prerequisites">
+        <h2>Prerequisites</h2>
+        <div class="prereq-chips">
+            <span>AWS account (free tier works)</span>
+            <span>Registered domain name</span>
+            <span>Basic HTML / CSS / JS</span>
+            <span>AWS CLI installed &amp; configured</span>
+            <span>Git + GitHub account</span>
+        </div>
+    </section>
+
+    <section class="learn-section" id="architecture">
+        <h2>Architecture</h2>
+        <div class="arch-diagram">
+            <div class="arch-rows">
+                <div class="arch-row">
+                    <span class="arch-label">Visitors</span>
+                    <div class="node">Browser</div>
+                    <span class="arrow">→</span>
+                    <div class="node secondary">Route 53 DNS</div>
+                    <span class="arrow">→</span>
+                    <div class="node secondary">CloudFront CDN</div>
+                    <span class="arrow">→</span>
+                    <div class="node">S3 Bucket (origin)</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">HTTPS</span>
+                    <div class="node tertiary">ACM Certificate</div>
+                    <span class="arrow">attached to</span>
+                    <div class="node secondary">CloudFront</div>
+                </div>
+                <div class="arch-row">
+                    <span class="arch-label">CI/CD</span>
+                    <div class="node">GitHub repo</div>
+                    <span class="arrow">→ push →</span>
+                    <div class="node secondary">GitHub Actions</div>
+                    <span class="arrow">→ aws s3 sync →</span>
+                    <div class="node">S3 Bucket</div>
+                    <span class="arrow">+</span>
+                    <div class="node secondary">CF Invalidation</div>
+                </div>
+            </div>
+            <p class="arch-note">ACM certificates for CloudFront must be provisioned in us-east-1 regardless of where your S3 bucket is.</p>
+        </div>
+    </section>
+
+    <section class="learn-section" id="tutorial">
+        <h2>Tutorial steps</h2>
+        <div class="steps">
+
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>Create and configure your S3 bucket</h3>
+                    <p>Create an S3 bucket with the same name as your domain (e.g. <em>yourdomain.com</em>). Disable "Block all public access" and enable static website hosting under the bucket's Properties tab. Set the index document to <em>index.html</em>.</p>
+                    <code>aws s3 mb s3://yourdomain.com --region eu-west-1
+aws s3 website s3://yourdomain.com \
+  --index-document index.html \
+  --error-document index.html</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>Set the bucket policy for public read</h3>
+                    <p>Create a bucket policy that allows CloudFront (via OAC) to read objects. Avoid making the bucket fully public — instead use an Origin Access Control attached to your CloudFront distribution.</p>
+                    <code>{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Sid": "AllowCloudFrontOAC",
+    "Effect": "Allow",
+    "Principal": { "Service": "cloudfront.amazonaws.com" },
+    "Action": "s3:GetObject",
+    "Resource": "arn:aws:s3:::yourdomain.com/*"
+  }]
+}</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Request an SSL certificate via ACM</h3>
+                    <p>Open ACM in the <strong>us-east-1 (N. Virginia) region</strong> — this is a hard requirement for CloudFront. Request a public certificate for your domain and wildcard (<em>*.yourdomain.com</em>). Validate via DNS by adding the CNAME records ACM provides to Route 53.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h3>Create a CloudFront distribution</h3>
+                    <p>In CloudFront, create a new distribution. Set the origin domain to your S3 bucket (use the S3 REST endpoint, not the website endpoint). Attach an Origin Access Control. Under Viewer Protocol Policy, choose "Redirect HTTP to HTTPS". Attach your ACM certificate and set your domain as an Alternate Domain Name (CNAME).</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                    <h3>Configure Route 53</h3>
+                    <p>Create a hosted zone for your domain in Route 53. Add an A record (Alias) pointing to your CloudFront distribution. If using a subdomain (e.g. www), add a CNAME record pointing to the CloudFront domain name.</p>
+                    <code>Type: A — Alias
+Alias target: dXXXXXXXXXXX.cloudfront.net</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">6</div>
+                <div class="step-content">
+                    <h3>Set up GitHub Actions for CI/CD</h3>
+                    <p>Add a workflow file to your repo. On every push to <em>main</em>, it syncs your files to S3 and invalidates the CloudFront cache so visitors always get the latest version. Store your AWS credentials as GitHub repository secrets.</p>
+                    <code>name: Deploy to AWS
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Sync to S3
+        run: aws s3 sync . s3://yourdomain.com --delete
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-west-1
+      - name: Invalidate CloudFront cache
+        run: aws cloudfront create-invalidation \
+          --distribution-id ${{ secrets.CF_DISTRIBUTION_ID }} \
+          --paths "/*"</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">7</div>
+                <div class="step-content">
+                    <h3>Upload your site and verify</h3>
+                    <p>Push your code to GitHub. The Actions workflow will sync to S3 automatically. Wait a few minutes for DNS propagation, then visit your domain over HTTPS to verify everything is working.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="learn-section" id="learnings">
+        <h2>Key learnings</h2>
+        <div class="learnings">
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> ACM certificates must be provisioned in us-east-1 for CloudFront — even if your bucket is in another region.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Always invalidate the CloudFront cache after deploying. Without this, visitors may see stale cached files for up to 24 hours.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Use Origin Access Control (OAC) instead of making the S3 bucket public. This keeps your files private and only accessible through CloudFront.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Your S3 bucket name must exactly match your domain name when using Route 53 alias records.</div>
+            <div class="learning-item"><i class="fas fa-lightbulb"></i> Store AWS credentials as GitHub Secrets — never commit them to source control.</div>
+        </div>
+    </section>
+
+    <section class="learn-section" id="resources">
+        <h2>Resources</h2>
+        <div class="resources">
+            <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> AWS Docs — Hosting a static website on S3</a>
+            <a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> AWS Docs — Getting started with CloudFront</a>
+            <a href="https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> AWS Docs — AWS Certificate Manager overview</a>
+            <a href="https://docs.github.com/en/actions" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> GitHub Docs — GitHub Actions</a>
+        </div>
+    </section>
+
+</main>
+
+<footer class="learn-cta">
+    <p>Explore the source code or read the full article on dev.to</p>
+    <div class="cta-buttons">
+        <a href="https://github.com/GakuruUri/portfolio" target="_blank" class="btn-primary"><i class="fab fa-github"></i> View on GitHub</a>
+        <a href="https://dev.to/gakuruuri/-hosting-a-static-portfolio-website-on-aws-with-cicd-31b9" target="_blank" class="btn-secondary"><i class="fab fa-dev"></i> Read on dev.to</a>
+    </div>
+</footer>
+
+</body>
+</html>
