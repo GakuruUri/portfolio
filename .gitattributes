@@ -1,0 +1,25 @@
+# Normalize line endings and treat web source as text to prevent
+# encoding corruption (e.g. stray NUL bytes) on commit.
+* text=auto
+
+*.html  text eol=lf
+*.css   text eol=lf
+*.scss  text eol=lf
+*.js    text eol=lf
+*.json  text eol=lf
+*.svg   text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+
+# Binary assets — never modify or normalize.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.webp  binary
+*.pdf   binary
+*.docx  binary
+*.woff  binary
+*.woff2 binary

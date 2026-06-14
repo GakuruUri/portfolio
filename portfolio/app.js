@@ -15,19 +15,15 @@ function PageTransitions(){
 
     // Sections Active
     allSections.addEventListener('click', (e) =>{
-        const id = e.target.dataset.id;
+        const control = e.target.closest('.control');
+        const id = control && control.dataset.id;
         if(id){
-            sectBtns.forEach((btn) => {
-                btn.classList.remove('active')
-            })
-            e.target.classList.add('active')
-
             sections.forEach((section) =>{
                 section.classList.remove('active')
             })
 
             const element = document.getElementById(id);
-            element.classList.add('active');
+            if(element) element.classList.add('active');
         }
     })
 
