@@ -38,7 +38,7 @@ function PageTransitions(){
 PageTransitions();
 
 // Typed role animation
-const roles = ['Systems Analyst', 'Cloud Engineer', 'DevOps Engineer'];
+const roles = ['Cloud Engineer', 'DevOps Engineer', 'AWS Solutions Architect', 'Systems Analyst'];
 let roleIndex = 0;
 let charIndex = 0;
 let isDeleting = false;
