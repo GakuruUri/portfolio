@@ -103,7 +103,7 @@
                 <div class="step-content">
                     <h3>Variables, data types, and operators</h3>
                     <p>Python is dynamically typed — you don't declare types explicitly. Understand the key built-in types and how operators work on them.</p>
-                    <code>
+            <code>
                 name = "Uri"           # str
                 age  = 28             # int
                 score = 95.5          # float
@@ -115,8 +115,8 @@
                 # Type conversion
                 age_str = str(age)    # int → str
                 pi = float("3.14")    # str → float
-                    </code>
-                </div>
+            </code>
+            </div>
             </div>
 
             <div class="step">
@@ -124,21 +124,22 @@
                 <div class="step-content">
                     <h3>Control flow — if / for / while</h3>
                     <p>Python uses indentation to define code blocks. Master list comprehensions early — they are more Pythonic and faster than equivalent for loops.</p>
-                    <code># Conditional
-                        if score >= 90:
-                            print("A grade")
-                        elif score >= 75:
-                            print("B grade")
-                        else:
-                            print("Keep going")
+            <code># Conditional
+                if score >= 90:
+                    print("A grade")
+                elif score >= 75:
+                    print("B grade")
+                else:
+                    print("Keep going")
 
-                        # List comprehension (preferred over for loop)
-                        squares = [x**2 for x in range(1, 11)]
+                # List comprehension (preferred over for loop)
+                squares = [x**2 for x in range(1, 11)]
 
-                        # Loop with enumerate
-                        fruits = ["apple", "banana", "cherry"]
-                        for index, fruit in enumerate(fruits):
-                            print(f"{index}: {fruit}")</code>
+                # Loop with enumerate
+                fruits = ["apple", "banana", "cherry"]
+                for index, fruit in enumerate(fruits):
+                    print(f"{index}: {fruit}")
+                </code>
                 </div>
             </div>
 
@@ -147,19 +148,21 @@
                 <div class="step-content">
                     <h3>Functions and scope</h3>
                     <p>Write functions with default arguments, *args for variable positional arguments, and **kwargs for keyword arguments. Understand local vs global scope.</p>
-                    <code>def greet(name, greeting="Hello"):
-                            return f"{greeting}, {name}!"
+            <code>
+                def greet(name, greeting="Hello"):
+                    return f"{greeting}, {name}!"
 
-                        # *args and **kwargs
-                        def summarise(*args, **kwargs):
-                            print(f"Positional: {args}")
-                            print(f"Keyword: {kwargs}")
+                # *args and **kwargs
+                def summarise(*args, **kwargs):
+                    print(f"Positional: {args}")
+                    print(f"Keyword: {kwargs}")
 
-                        summarise(1, 2, 3, name="Uri", role="Engineer")
+                summarise(1, 2, 3, name="Uri", role="Engineer")
 
-                        # Lambda (anonymous functions)
-                        square = lambda x: x ** 2
-                        doubled = list(map(lambda x: x * 2, [1, 2, 3]))</code>
+                # Lambda (anonymous functions)
+                square = lambda x: x ** 2
+                doubled = list(map(lambda x: x * 2, [1, 2, 3]))
+            </code>
                 </div>
             </div>
 
@@ -168,27 +171,29 @@
                 <div class="step-content">
                     <h3>Object-Oriented Programming</h3>
                     <p>Classes let you model real-world entities with attributes (data) and methods (behaviour). Inheritance allows one class to reuse and extend another.</p>
-                    <code>class Animal:
-                        def __init__(self, name, species):
-                            self.name = name
-                            self.species = species
+            <code>
+                class Animal:
+                def __init__(self, name, species):
+                    self.name = name
+                    self.species = species
 
-                        def __repr__(self):
-                            return f"{self.name} ({self.species})"
+                def __repr__(self):
+                    return f"{self.name} ({self.species})"
 
-                        def speak(self):
-                            raise NotImplementedError
+                def speak(self):
+                    raise NotImplementedError
 
-                    class Dog(Animal):
-                        def __init__(self, name):
-                            super().__init__(name, species="Canis lupus familiaris")
+                class Dog(Animal):
+                def __init__(self, name):
+                    super().__init__(name, species="Canis lupus familiaris")
 
-                        def speak(self):
-                            return f"{self.name} says: Woof!"
+                def speak(self):
+                    return f"{self.name} says: Woof!"
 
-                    rex = Dog("Rex")
-                    print(rex.speak())</code>
-                </div>
+                rex = Dog("Rex")
+                print(rex.speak())
+            </code>
+            </div>
             </div>
 
             <div class="step">
@@ -196,20 +201,22 @@
                 <div class="step-content">
                     <h3>Working with APIs</h3>
                     <p>Use the <em>requests</em> library to consume REST APIs. Understand HTTP methods (GET, POST), status codes, and how to parse JSON responses.</p>
-                    <code>import requests
+            <code>
+                import requests
 
-                        # GET request
-                        response = requests.get("https://api.open-meteo.com/v1/forecast",
-                            params={"latitude": -1.286389, "longitude": 36.817223,
-                                    "current_weather": True})
+                # GET request
+                response = requests.get("https://api.open-meteo.com/v1/forecast",
+                    params={"latitude": -1.286389, "longitude": 36.817223,
+                            "current_weather": True})
 
-                        if response.status_code == 200:
-                            data = response.json()
-                            temp = data["current_weather"]["temperature"]
-                            print(f"Nairobi temperature: {temp}°C")
-                        else:
-                            print(f"Error: {response.status_code}")</code>
-                </div>
+                if response.status_code == 200:
+                    data = response.json()
+                    temp = data["current_weather"]["temperature"]
+                    print(f"Nairobi temperature: {temp}°C")
+                else:
+                    print(f"Error: {response.status_code}")
+            </code>
+            </div>
             </div>
 
             <div class="step">
@@ -217,21 +224,22 @@
                 <div class="step-content">
                     <h3>Automation with Python</h3>
                     <p>Python's standard library and third-party packages make it easy to automate file operations, schedule tasks, send emails, and interact with the operating system.</p>
-                    <code>import os
-                    import shutil
-                    from pathlib import Path
+            <code>
+                import os
+                import shutil
+                from pathlib import Path
 
-                    # Organise files by extension
-                    downloads = Path.home() / "Downloads"
-                    for file in downloads.iterdir():
-                        if file.is_file():
-                            ext = file.suffix.lower().strip(".")
-                            dest = downloads / ext
-                            dest.mkdir(exist_ok=True)
-                            shutil.move(str(file), str(dest / file.name))
-                            print(f"Moved {file.name} → {ext}/")
-                        </code>
-                </div>
+                # Organise files by extension
+                downloads = Path.home() / "Downloads"
+                for file in downloads.iterdir():
+                    if file.is_file():
+                        ext = file.suffix.lower().strip(".")
+                        dest = downloads / ext
+                        dest.mkdir(exist_ok=True)
+                        shutil.move(str(file), str(dest / file.name))
+                        print(f"Moved {file.name} → {ext}/")
+            </code>
+            </div>
             </div>
 
         </div>
