@@ -2,8 +2,8 @@
 
 :root {
     --primary: #191d2b;
-    --accent: #6c63ff;
-    --accent-light: #a39af7;
+    --accent: #27ae60;
+    --accent-light: #5fd99a;
     --bg: #f8f8f8;
     --card-bg: #ffffff;
     --text: #191d2b;
@@ -11,8 +11,8 @@
     --border: #e0e0e0;
     --code-bg: #f1f1f1;
     --step-bg: #191d2b;
-    --tag-bg: #eeeeff;
-    --tag-color: #4a45cc;
+    --tag-bg: #e6f7ee;
+    --tag-color: #1b7a43;
     --font: 'Poppins', sans-serif;
 }
 
@@ -170,7 +170,7 @@ body {
     gap: 8px;
     flex-wrap: wrap;
 }
-.arch-flow .node {
+.node {
     background: var(--primary);
     color: #fff;
     font-size: 0.78rem;
@@ -179,13 +179,13 @@ body {
     border-radius: 6px;
     white-space: nowrap;
 }
-.arch-flow .node.secondary {
+.node.secondary {
     background: var(--accent);
 }
-.arch-flow .node.tertiary {
+.node.tertiary {
     background: #2e8b57;
 }
-.arch-flow .arrow {
+.arrow {
     color: var(--text-muted);
     font-size: 1rem;
 }
@@ -382,3 +382,43 @@ body {
     .cta-buttons { flex-direction: column; align-items: stretch; }
     .btn-primary, .btn-secondary { justify-content: center; }
 }
+
+/* THEME TOGGLE BUTTON */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+.theme-toggle {
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    appearance: none;
+    color: #fff;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: background 0.2s;
+}
+.theme-toggle:hover { background: rgba(255, 255, 255, 0.25); }
+
+/* DARK MODE */
+body.dark-mode {
+    --bg: #10131c;
+    --card-bg: #191d2b;
+    --text: #e6e6e6;
+    --text-muted: #9aa0ac;
+    --border: #2a2e3a;
+    --code-bg: #0e1118;
+    --tag-bg: #14321f;
+    --tag-color: #5fd99a;
+}
+body.dark-mode .learn-section h2 { color: var(--accent-light); }
+body.dark-mode .step-content h3 { color: #ffffff; }
+body.dark-mode .step-content code { color: #d6d6d6; }
+body.dark-mode .btn-secondary { color: #ffffff; border-color: rgba(255, 255, 255, 0.45); }
+body.dark-mode .btn-secondary:hover { background: var(--accent); border-color: var(--accent); }

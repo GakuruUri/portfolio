@@ -1,0 +1,241 @@
+/* =============================================================
+   enhancements.css  —  visual polish layer
+   Loaded AFTER styles.css. Purely additive: it overrides a few
+   rules and adds motion, depth and micro-interactions. Removing
+   this file (and enhancements.js) restores the original look.
+   ============================================================= */
+
+/* ---- Global niceties -------------------------------------- */
+html { scroll-behavior: smooth; }
+
+/* Screen-reader-only (visually hidden but accessible) */
+.sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Skip-to-content link: hidden until keyboard-focused */
+.skip-link {
+    position: fixed;
+    top: -60px;
+    left: 12px;
+    z-index: 1000;
+    background: var(--color-secondary);
+    color: #fff;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    transition: top 0.25s ease;
+}
+.skip-link:focus { top: 12px; }
+
+::selection {
+    background: var(--color-secondary);
+    color: #ffffff;
+}
+
+/* Custom scrollbar */
+* { scrollbar-width: thin; scrollbar-color: var(--color-grey-4) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: var(--color-grey-4);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-secondary); }
+
+/* Clear, consistent keyboard focus */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+/* ---- Atmospheric background ------------------------------- */
+/* Each full-screen section/header carries a soft accent glow so
+   the flat dark surface gains depth without hurting contrast. */
+.section,
+header {
+    background-color: var(--color-primary);
+    background-image:
+        radial-gradient(circle at 12% 18%, rgba(39, 174, 96, 0.10), transparent 38%),
+        radial-gradient(circle at 88% 82%, rgba(39, 174, 96, 0.07), transparent 42%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* ---- Smoother section entrance ---------------------------- */
+/* Redefining the existing `appear` animation (last definition
+   wins) replaces the abrupt scaleY collapse with a gentle fade-up. */
+@keyframes appear {
+    0%   { opacity: 0; transform: translateY(24px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.active { animation: appear 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* ---- Hero ------------------------------------------------- */
+.left-header .h-shape {
+    background: linear-gradient(135deg, var(--color-secondary), #1f8a4c);
+}
+.header-content .left-header .image {
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+}
+
+/* Certification badges become interactive chips */
+.cert-badges .cert-badge {
+    transition: all 0.3s ease;
+    cursor: default;
+}
+.cert-badges .cert-badge:hover {
+    background: var(--color-secondary);
+    color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+/* ---- Side navigation: labels + active ring ---------------- */
+.controls .control {
+    position: relative;
+    transition: transform 0.25s ease, background-color 0.4s ease;
+}
+.controls .control:hover { transform: translateY(-3px); }
+
+/* Tooltip label pulled from each button's aria-label */
+.controls .control::after {
+    content: attr(aria-label);
+    position: absolute;
+    right: 125%;
+    top: 50%;
+    transform: translateY(-50%) translateX(8px);
+    background: var(--color-grey-5);
+    color: var(--color-white);
+    padding: 5px 11px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: var(--box-shadow-1);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.controls .control:hover::after,
+.controls .control:focus-visible::after {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* Clearer active state */
+.controls .active-btn {
+    box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.25);
+}
+
+/* On narrow screens the controls sit at the bottom — flip tooltips up */
+@media screen and (max-width: 970px) {
+    .controls .control::after {
+        right: auto;
+        top: auto;
+        bottom: 130%;
+        left: 50%;
+        transform: translateX(-50%) translateY(8px);
+    }
+    .controls .control:hover::after,
+    .controls .control:focus-visible::after {
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* ---- About: stat cards & timeline ------------------------- */
+.about-item { will-change: transform; }
+.timeline .timeline-item .tl-icon {
+    box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.15);
+    transition: transform 0.3s ease;
+}
+.timeline .timeline-item:hover .tl-icon { transform: scale(1.08); }
+
+/* Skill bars: rounded track + theme-aware fill.
+   The fill width comes from CSS (.aws, .terraform, ...); JS only
+   animates a scaleX reveal, so the bar is always visible even if JS
+   is disabled or fails. */
+.about-stats .progress-bar .progress-con .progress {
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: var(--color-grey-5);
+}
+.about-stats .progress-bar .progress-con .progress span {
+    border-radius: 6px;
+    transform-origin: left center;
+    /* Green accent in both themes (light/dark accent is now green) */
+    background: linear-gradient(90deg, #1f8a4c, var(--color-secondary));
+}
+
+/* ---- Portfolio cards -------------------------------------- */
+.portfolios .portfolio-item {
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+.portfolios .portfolio-item img {
+    transition: transform 0.5s ease, filter 0.5s ease;
+}
+.portfolios .portfolio-item:hover img { transform: scale(1.06); }
+.portfolios .portfolio-item .hover-items {
+    background: linear-gradient(135deg, rgba(39, 174, 96, 0.94), rgba(25, 29, 43, 0.92));
+}
+.portfolios .portfolio-item .hover-items .icons .icon {
+    transform: translateY(8px);
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+.portfolios .portfolio-item:hover .hover-items .icons .icon {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* ---- Blog cards ------------------------------------------- */
+.blogs .blog { overflow: hidden; }
+.blogs .blog .blog-text .blog-cta { align-self: flex-start; }
+
+/* ---- Section heading watermark ---------------------------- */
+.main-title h2 .bg-text { opacity: 0.55; }
+
+/* ---- Contact ---------------------------------------------- */
+.contact-content-con .right-contact input,
+.contact-content-con .right-contact textarea {
+    border: 1px solid transparent;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+.contact-content-con .right-contact input:focus,
+.contact-content-con .right-contact textarea:focus {
+    border-color: var(--color-secondary);
+}
+
+/* ---- Reveal-on-activate (driven by enhancements.js) -------- */
+body.has-reveal [data-anim] {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+}
+body.has-reveal [data-anim].in {
+    opacity: 1;
+    transform: none;
+}
+
+/* ---- Respect reduced-motion preferences ------------------- */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+    body.has-reveal [data-anim] { opacity: 1 !important; transform: none !important; }
+}

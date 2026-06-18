@@ -148,6 +148,9 @@ section{
     .control{
         padding: 1rem;
         cursor: pointer;
+        border: none;
+        appearance: none;
+        font: inherit;
         background-color: var(--color-grey-4);
         width: 55px;
         height: 55px;
@@ -170,6 +173,8 @@ section{
     right: 3%;
     width: 70px;
     height: 70px;
+    border: none;
+    appearance: none;
     border-radius: 50%;
     background-color: var(--color-grey-4);
     cursor: pointer;
@@ -450,7 +455,7 @@ section{
 
 .left-about li::before {
     content: "•"; // Optional: Custom bullet style
-    color: var(--primary-color); // Matches theme color
+    color: var(--color-secondary); // Matches theme color
     font-weight: bold;
     display: inline-block;
     width: 1em;
@@ -831,34 +836,11 @@ section{
             :last-child{
                 margin-left: 1.5rem;
             }
-
-            // new buttons for send email and download cv.
-            .btn-con {
-                display: flex;
-                justify-content: flex-start; // Align buttons to the left
-                gap: 100px; // Add space between buttons
-            }
-            
-            .email-btn {
-                background-color: var(--secondary-color); // Use your theme's secondary color
-                color: white;
-                margin-right: 20px;
-                border: 1px solid var(--secondary-color);
-                transition: background-color 0.3s ease;
-               
-            }
-            
-            .email-btn:hover {
-                background-color: white;
-                color: var(--secondary-color);
-            }
-            
-
-        // }
-        // .submit-btn{
-        //     display: flex;
-        //     justify-content: flex-start;
-        // }
+        }
+        .submit-btn{
+            display: flex;
+            justify-content: flex-start;
+        }
     }
 }
 
@@ -879,37 +861,43 @@ section{
     border: 1px solid var(--color-secondary);
     display: flex;
     align-self: flex-start;
-    display: flex;
     align-items: center;
     overflow: hidden;
-    .btn.text{
-        padding: 0 2rem;
+    background-color: transparent;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease-in-out;
+    .btn-text{
+        padding: 0 0.5rem;
     }
     .btn-icon{
-        background-color: var(--color-secondary);
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 50%;
-        padding: 1rem;
     }
     &::before{
         content: '';
         position: absolute;
         top: 0;
         right: 0;
-        transform: translateX(100%);
-        transition: all .4s ease-out;
+        width: 0%;
+        height: 100%;
+        background-color: var(--color-secondary);
+        transition: all 0.3s ease-in-out;
         z-index: -1;
     }
     &:hover{
-        transition: all .4s ease-out;
+        color: var(--color-primary);
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         &::before{
             width: 100%;
-            height: 100%;
-            background-color: var(--color-secondary);
-            transform: translateX(0);
+            left: 0;
         }
+    }
+    &:active{
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 }
 button.main-btn{

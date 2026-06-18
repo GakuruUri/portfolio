@@ -5,17 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SQL Analytics with Adventure Works | Uri Gakuru</title>
     <meta name="description" content="Business intelligence and SQL analytics using the Adventure Works sample database — KPI reports, analytical queries, stored procedures, and data exploration.">
+    <meta property="og:title" content="SQL Analytics with Adventure Works | Uri Gakuru">
+    <meta property="og:description" content="Business intelligence and SQL analytics using the Adventure Works sample database — KPI reports, analytical queries, stored procedures, and data exploration.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://urigakuru.uriroots.com/learning/adventure-works-analytics.html">
+    <meta property="og:image" content="https://urigakuru.uriroots.com/img/Uri.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SQL Analytics with Adventure Works | Uri Gakuru">
+    <meta name="twitter:description" content="Business intelligence and SQL analytics using the Adventure Works sample database — KPI reports, analytical queries, stored procedures, and data exploration.">
+    <meta name="twitter:image" content="https://urigakuru.uriroots.com/img/Uri.png">
+    <link rel="canonical" href="https://urigakuru.uriroots.com/learning/adventure-works-analytics.html">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
     <link rel="stylesheet" href="learning.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "SQL Analytics with Adventure Works",
+      "description": "Business intelligence and SQL analytics using the Adventure Works sample database — KPI reports, analytical queries, stored procedures, and data exploration.",
+      "image": "https://urigakuru.uriroots.com/img/Uri.png",
+      "author": { "@type": "Person", "name": "Uri Gakuru Karanja", "url": "https://urigakuru.uriroots.com" },
+      "publisher": { "@type": "Person", "name": "Uri Gakuru Karanja" },
+      "mainEntityOfPage": "https://urigakuru.uriroots.com/learning/adventure-works-analytics.html"
+    }
+    </script>
 </head>
 <body>
 
 <nav class="learn-nav">
     <a href="../index.html" class="brand">Uri Gakuru</a>
-    <a href="../index.html#portfolio" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+    <div class="nav-right"><a href="../index.html#portfolio" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a><button type="button" class="theme-toggle" aria-label="Toggle dark mode"><i class="fas fa-moon" aria-hidden="true"></i></button></div>
 </nav>
 
 <header class="learn-hero">
@@ -119,7 +146,7 @@ ORDER BY TABLE_NAME;</code>
                 <div class="step-content">
                     <h3>Revenue analysis — monthly and yearly trends</h3>
                     <p>Calculate total revenue over time. Use DATETRUNC or FORMAT to group by month or year. Compare year-over-year growth using LAG().</p>
-                    <code">SELECT
+                    <code>SELECT
     YEAR(OrderDate)                      AS year,
     MONTH(OrderDate)                     AS month,
     COUNT(SalesOrderID)                  AS order_count,
@@ -197,7 +224,7 @@ ORDER BY total_revenue DESC;</code>
                 <div class="step-content">
                     <h3>Customer segmentation with RFM analysis</h3>
                     <p>RFM (Recency, Frequency, Monetary) is a classic segmentation technique. Score each customer on how recently they bought, how often they buy, and how much they spend.</p>
-                    <code">WITH rfm_base AS (
+                    <code>WITH rfm_base AS (
     SELECT
         CustomerID,
         DATEDIFF(DAY, MAX(OrderDate), '2014-07-01') AS recency,
@@ -224,7 +251,7 @@ ORDER BY monetary DESC;</code>
                 <div class="step-content">
                     <h3>Package reports as stored procedures</h3>
                     <p>Wrap your most useful queries in stored procedures so they can be called easily from reporting tools or scheduled jobs. Add parameters for date range filtering.</p>
-                    <code">CREATE PROCEDURE report.MonthlyRevenue
+                    <code>CREATE PROCEDURE report.MonthlyRevenue
     @StartDate DATE = '2012-01-01',
     @EndDate   DATE = '2014-12-31'
 AS
@@ -262,9 +289,9 @@ EXEC report.MonthlyRevenue @StartDate = '2013-01-01', @EndDate = '2013-12-31';</
     <section class="learn-section" id="resources">
         <h2>Resources</h2>
         <div class="resources">
-            <a href="https://github.com/microsoft/sql-server-samples/releases/tag/adventureworks" target="_blank" class="resource-link"><i class="fab fa-github"></i> Adventure Works database download (Microsoft)</a>
-            <a href="https://learn.microsoft.com/en-us/sql/t-sql/queries/select-over-clause-transact-sql" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Microsoft Docs — OVER clause (window functions)</a>
-            <a href="https://github.com/GakuruUri/adventure_works_project" target="_blank" class="resource-link"><i class="fab fa-github"></i> Full project on GitHub</a>
+            <a href="https://github.com/microsoft/sql-server-samples/releases/tag/adventureworks" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fab fa-github"></i> Adventure Works database download (Microsoft)</a>
+            <a href="https://learn.microsoft.com/en-us/sql/t-sql/queries/select-over-clause-transact-sql" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fas fa-external-link-alt"></i> Microsoft Docs — OVER clause (window functions)</a>
+            <a href="https://github.com/GakuruUri/adventure_works_project" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fab fa-github"></i> Full project on GitHub</a>
         </div>
     </section>
 
@@ -273,10 +300,12 @@ EXEC report.MonthlyRevenue @StartDate = '2013-01-01', @EndDate = '2013-12-31';</
 <footer class="learn-cta">
     <p>Explore all queries and reports in the GitHub repository</p>
     <div class="cta-buttons">
-        <a href="https://github.com/GakuruUri/adventure_works_project" target="_blank" class="btn-primary"><i class="fab fa-github"></i> View on GitHub</a>
-        <a href="https://www.linkedin.com/in/uri-gakuru-karanja/" target="_blank" class="btn-secondary"><i class="fab fa-linkedin"></i> Connect on LinkedIn</a>
+        <a href="https://github.com/GakuruUri/adventure_works_project" target="_blank" rel="noopener noreferrer" class="btn-primary"><i class="fab fa-github"></i> View on GitHub</a>
+        <a href="https://www.linkedin.com/in/uri-gakuru-karanja/" target="_blank" rel="noopener noreferrer" class="btn-secondary"><i class="fab fa-linkedin"></i> Connect on LinkedIn</a>
     </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="learn.js"></script>
 </body>
 </html>

@@ -5,17 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hosting a Static Website on AWS S3 + CloudFront | Uri Gakuru</title>
     <meta name="description" content="Step-by-step guide to hosting a static website on AWS using S3, CloudFront, ACM, Route 53, and GitHub Actions CI/CD.">
+    <meta property="og:title" content="Hosting a Static Website on AWS S3 + CloudFront | Uri Gakuru">
+    <meta property="og:description" content="Step-by-step guide to hosting a static website on AWS using S3, CloudFront, ACM, Route 53, and GitHub Actions CI/CD.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://urigakuru.uriroots.com/learning/aws-s3-cloudfront-hosting.html">
+    <meta property="og:image" content="https://urigakuru.uriroots.com/img/Uri.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Hosting a Static Website on AWS S3 + CloudFront | Uri Gakuru">
+    <meta name="twitter:description" content="Step-by-step guide to hosting a static website on AWS using S3, CloudFront, ACM, Route 53, and GitHub Actions CI/CD.">
+    <meta name="twitter:image" content="https://urigakuru.uriroots.com/img/Uri.png">
+    <link rel="canonical" href="https://urigakuru.uriroots.com/learning/aws-s3-cloudfront-hosting.html">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
     <link rel="stylesheet" href="learning.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Hosting a Static Website on AWS S3 + CloudFront",
+      "description": "Step-by-step guide to hosting a static website on AWS using S3, CloudFront, ACM, Route 53, and GitHub Actions CI/CD.",
+      "image": "https://urigakuru.uriroots.com/img/Uri.png",
+      "author": { "@type": "Person", "name": "Uri Gakuru Karanja", "url": "https://urigakuru.uriroots.com" },
+      "publisher": { "@type": "Person", "name": "Uri Gakuru Karanja" },
+      "mainEntityOfPage": "https://urigakuru.uriroots.com/learning/aws-s3-cloudfront-hosting.html"
+    }
+    </script>
 </head>
 <body>
 
 <nav class="learn-nav">
     <a href="../index.html" class="brand">Uri Gakuru</a>
-    <a href="../index.html#portfolio" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+    <div class="nav-right"><a href="../index.html#portfolio" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a><button type="button" class="theme-toggle" aria-label="Toggle dark mode"><i class="fas fa-moon" aria-hidden="true"></i></button></div>
 </nav>
 
 <header class="learn-hero">
@@ -204,10 +231,10 @@ jobs:
     <section class="learn-section" id="resources">
         <h2>Resources</h2>
         <div class="resources">
-            <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> AWS Docs — Hosting a static website on S3</a>
-            <a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> AWS Docs — Getting started with CloudFront</a>
-            <a href="https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> AWS Docs — AWS Certificate Manager overview</a>
-            <a href="https://docs.github.com/en/actions" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> GitHub Docs — GitHub Actions</a>
+            <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fas fa-external-link-alt"></i> AWS Docs — Hosting a static website on S3</a>
+            <a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fas fa-external-link-alt"></i> AWS Docs — Getting started with CloudFront</a>
+            <a href="https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fas fa-external-link-alt"></i> AWS Docs — AWS Certificate Manager overview</a>
+            <a href="https://docs.github.com/en/actions" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fas fa-external-link-alt"></i> GitHub Docs — GitHub Actions</a>
         </div>
     </section>
 
@@ -216,10 +243,12 @@ jobs:
 <footer class="learn-cta">
     <p>Explore the source code or read the full article on dev.to</p>
     <div class="cta-buttons">
-        <a href="https://github.com/GakuruUri/portfolio" target="_blank" class="btn-primary"><i class="fab fa-github"></i> View on GitHub</a>
-        <a href="https://dev.to/gakuruuri/-hosting-a-static-portfolio-website-on-aws-with-cicd-31b9" target="_blank" class="btn-secondary"><i class="fab fa-dev"></i> Read on dev.to</a>
+        <a href="https://github.com/GakuruUri/portfolio" target="_blank" rel="noopener noreferrer" class="btn-primary"><i class="fab fa-github"></i> View on GitHub</a>
+        <a href="https://dev.to/gakuruuri/-hosting-a-static-portfolio-website-on-aws-with-cicd-31b9" target="_blank" rel="noopener noreferrer" class="btn-secondary"><i class="fab fa-dev"></i> Read on dev.to</a>
     </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="learn.js"></script>
 </body>
 </html>

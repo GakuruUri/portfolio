@@ -8,7 +8,24 @@
         @media print {
             body { margin: 0; padding: 0; }
             .page-break { page-break-after: always; }
+            .no-print { display: none !important; }
         }
+        .download-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: #27ae60;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 11pt;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+        .download-btn:hover { background: #1f8a4c; }
         body {
             font-family: 'Calibri', 'Arial', sans-serif;
             line-height: 1.4;
@@ -151,6 +168,7 @@
     </style>
 </head>
 <body>
+    <button type="button" class="download-btn no-print" onclick="window.print()">⬇ Download PDF</button>
     <div class="header">
         <h1>URI GAKURU KARANJA</h1>
         <div class="subtitle">Cloud Engineer | DevOps Engineer | Systems Administrator</div>
@@ -168,7 +186,7 @@
 
     <div class="section-title">Professional Summary</div>
     <div class="summary">
-        AWS Certified Solutions Architect with 7+ years in healthcare IT and 5+ years running production cloud infrastructure on AWS/Azure, Veeam, Cove and Acronic cloud backup solutions. Specializes in Infrastructure as Code (Terraform/CloudFormation), CI/CD, Linux administration, and data engineering. Cut infrastructure costs by more than 35%, sustained a 99.99% systems and network uptime, and led a 9-person team to a 97%+ issues resolution rate. Targeting Cloud Engineer, Systems Administrator or DevOps Engineer roles.
+        AWS Certified Solutions Architect with 7+ years in healthcare IT and 5+ years running production cloud infrastructure on AWS/Azure, Veeam, Cove and Acronis cloud backup solutions. Specializes in Infrastructure as Code (Terraform/CloudFormation), CI/CD, Linux administration, and data engineering. Cut infrastructure costs by more than 35%, sustained a 99.99% systems and network uptime, and led a 9-person team to a 97%+ issues resolution rate. Targeting Cloud Engineer, Systems Administrator or DevOps Engineer roles.
     </div>
 
     <div class="section-title">Technical Skills</div>

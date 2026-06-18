@@ -5,17 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Building a Recipe Sharing Application | Uri Gakuru</title>
     <meta name="description" content="Step-by-step guide to building a full-stack recipe sharing application — architecture, backend, API design, and deployment.">
+    <meta property="og:title" content="Building a Recipe Sharing Application | Uri Gakuru">
+    <meta property="og:description" content="Step-by-step guide to building a full-stack recipe sharing application — architecture, backend, API design, and deployment.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://urigakuru.uriroots.com/learning/recipe-sharing-app.html">
+    <meta property="og:image" content="https://urigakuru.uriroots.com/img/Uri.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Building a Recipe Sharing Application | Uri Gakuru">
+    <meta name="twitter:description" content="Step-by-step guide to building a full-stack recipe sharing application — architecture, backend, API design, and deployment.">
+    <meta name="twitter:image" content="https://urigakuru.uriroots.com/img/Uri.png">
+    <link rel="canonical" href="https://urigakuru.uriroots.com/learning/recipe-sharing-app.html">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
     <link rel="stylesheet" href="learning.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Building a Recipe Sharing Application",
+      "description": "Step-by-step guide to building a full-stack recipe sharing application — architecture, backend, API design, and deployment.",
+      "image": "https://urigakuru.uriroots.com/img/Uri.png",
+      "author": { "@type": "Person", "name": "Uri Gakuru Karanja", "url": "https://urigakuru.uriroots.com" },
+      "publisher": { "@type": "Person", "name": "Uri Gakuru Karanja" },
+      "mainEntityOfPage": "https://urigakuru.uriroots.com/learning/recipe-sharing-app.html"
+    }
+    </script>
 </head>
 <body>
 
 <nav class="learn-nav">
     <a href="../index.html" class="brand">Uri Gakuru</a>
-    <a href="../index.html#blogs" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+    <div class="nav-right"><a href="../index.html#blogs" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a><button type="button" class="theme-toggle" aria-label="Toggle dark mode"><i class="fas fa-moon" aria-hidden="true"></i></button></div>
 </nav>
 
 <header class="learn-hero">
@@ -227,9 +254,9 @@ CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:create_app()"]</code>
     <section class="learn-section" id="resources">
         <h2>Resources</h2>
         <div class="resources">
-            <a href="https://flask.palletsprojects.com/en/3.0.x/" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Flask documentation</a>
-            <a href="https://flask-sqlalchemy.palletsprojects.com/" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Flask-SQLAlchemy documentation</a>
-            <a href="https://flask-login.readthedocs.io/" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Flask-Login documentation</a>
+            <a href="https://flask.palletsprojects.com/en/3.0.x/" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fas fa-external-link-alt"></i> Flask documentation</a>
+            <a href="https://flask-sqlalchemy.palletsprojects.com/" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fas fa-external-link-alt"></i> Flask-SQLAlchemy documentation</a>
+            <a href="https://flask-login.readthedocs.io/" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fas fa-external-link-alt"></i> Flask-Login documentation</a>
         </div>
     </section>
 
@@ -238,10 +265,12 @@ CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:create_app()"]</code>
 <footer class="learn-cta">
     <p>Read the full article on dev.to or browse the source code</p>
     <div class="cta-buttons">
-        <a href="https://dev.to/gakuruuri/building-a-recipe-sharing-application-3gc5" target="_blank" class="btn-primary"><i class="fab fa-dev"></i> Read on dev.to</a>
-        <a href="https://github.com/GakuruUri" target="_blank" class="btn-secondary"><i class="fab fa-github"></i> View on GitHub</a>
+        <a href="https://dev.to/gakuruuri/building-a-recipe-sharing-application-3gc5" target="_blank" rel="noopener noreferrer" class="btn-primary"><i class="fab fa-dev"></i> Read on dev.to</a>
+        <a href="https://github.com/GakuruUri" target="_blank" rel="noopener noreferrer" class="btn-secondary"><i class="fab fa-github"></i> View on GitHub</a>
     </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="learn.js"></script>
 </body>
 </html>

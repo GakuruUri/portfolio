@@ -5,17 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Building a SQL Data Warehouse | Uri Gakuru</title>
     <meta name="description" content="Learn how to design and build a modern SQL data warehouse using Medallion Architecture (Bronze, Silver, Gold) with ETL pipelines and analytics.">
+    <meta property="og:title" content="Building a SQL Data Warehouse | Uri Gakuru">
+    <meta property="og:description" content="Learn how to design and build a modern SQL data warehouse using Medallion Architecture (Bronze, Silver, Gold) with ETL pipelines and analytics.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://urigakuru.uriroots.com/learning/sql-data-warehouse.html">
+    <meta property="og:image" content="https://urigakuru.uriroots.com/img/Uri.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Building a SQL Data Warehouse | Uri Gakuru">
+    <meta name="twitter:description" content="Learn how to design and build a modern SQL data warehouse using Medallion Architecture (Bronze, Silver, Gold) with ETL pipelines and analytics.">
+    <meta name="twitter:image" content="https://urigakuru.uriroots.com/img/Uri.png">
+    <link rel="canonical" href="https://urigakuru.uriroots.com/learning/sql-data-warehouse.html">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
     <link rel="stylesheet" href="learning.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Building a SQL Data Warehouse",
+      "description": "Learn how to design and build a modern SQL data warehouse using Medallion Architecture (Bronze, Silver, Gold) with ETL pipelines and analytics.",
+      "image": "https://urigakuru.uriroots.com/img/Uri.png",
+      "author": { "@type": "Person", "name": "Uri Gakuru Karanja", "url": "https://urigakuru.uriroots.com" },
+      "publisher": { "@type": "Person", "name": "Uri Gakuru Karanja" },
+      "mainEntityOfPage": "https://urigakuru.uriroots.com/learning/sql-data-warehouse.html"
+    }
+    </script>
 </head>
 <body>
 
 <nav class="learn-nav">
     <a href="../index.html" class="brand">Uri Gakuru</a>
-    <a href="../index.html#portfolio" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+    <div class="nav-right"><a href="../index.html#portfolio" class="back-link"><i class="fas fa-arrow-left"></i> Back to portfolio</a><button type="button" class="theme-toggle" aria-label="Toggle dark mode"><i class="fas fa-moon" aria-hidden="true"></i></button></div>
 </nav>
 
 <header class="learn-hero">
@@ -238,9 +265,9 @@ END;</code>
     <section class="learn-section" id="resources">
         <h2>Resources</h2>
         <div class="resources">
-            <a href="https://docs.microsoft.com/en-us/azure/databricks/lakehouse/medallion" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Databricks Docs — Medallion Architecture</a>
-            <a href="https://docs.microsoft.com/en-us/sql/relational-databases/stored-procedures/stored-procedures-database-engine" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Microsoft Docs — SQL Server Stored Procedures</a>
-            <a href="https://app.notion.com/p/SQL-Data-Warehouse-Project-23c86509b37080738ab1ea2f4e7fef4a" target="_blank" class="resource-link"><i class="fas fa-external-link-alt"></i> Project notes on Notion</a>
+            <a href="https://docs.microsoft.com/en-us/azure/databricks/lakehouse/medallion" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fas fa-external-link-alt"></i> Databricks Docs — Medallion Architecture</a>
+            <a href="https://docs.microsoft.com/en-us/sql/relational-databases/stored-procedures/stored-procedures-database-engine" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fas fa-external-link-alt"></i> Microsoft Docs — SQL Server Stored Procedures</a>
+            <a href="https://app.notion.com/p/SQL-Data-Warehouse-Project-23c86509b37080738ab1ea2f4e7fef4a" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fas fa-external-link-alt"></i> Project notes on Notion</a>
         </div>
     </section>
 
@@ -249,10 +276,12 @@ END;</code>
 <footer class="learn-cta">
     <p>Explore the full source code and documentation on GitHub</p>
     <div class="cta-buttons">
-        <a href="https://github.com/GakuruUri/sql-data-warehouse-project" target="_blank" class="btn-primary"><i class="fab fa-github"></i> View on GitHub</a>
-        <a href="https://www.linkedin.com/in/uri-gakuru-karanja/" target="_blank" class="btn-secondary"><i class="fab fa-linkedin"></i> Connect on LinkedIn</a>
+        <a href="https://github.com/GakuruUri/sql-data-warehouse-project" target="_blank" rel="noopener noreferrer" class="btn-primary"><i class="fab fa-github"></i> View on GitHub</a>
+        <a href="https://www.linkedin.com/in/uri-gakuru-karanja/" target="_blank" rel="noopener noreferrer" class="btn-secondary"><i class="fab fa-linkedin"></i> Connect on LinkedIn</a>
     </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="learn.js"></script>
 </body>
 </html>
